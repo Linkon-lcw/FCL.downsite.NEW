@@ -1,0 +1,12 @@
+.xf-nav-item {
+  position: relative;
+}
+
+.xf-nav-icon {
+  position: absolute;
+  mask-image: radial-gradient(circle at bottom right,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0) 50%);
+  mask-composite: add;
+  
+}

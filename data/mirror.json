@@ -1,0 +1,19 @@
+[
+  {
+    "id": 0,
+    "name": "线路1",
+    "baseUrl": "/data/down",
+    "contributeId": [
+      0
+    ]
+  },
+  {
+    "id": 1,
+    "name": "线路2",
+    "baseUrl": "https://fengyuan.frostlynx.work",
+    "apiVer": "fengyuan",
+    "contributeId": [
+      1
+    ]
+  }
+]

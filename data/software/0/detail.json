@@ -1,0 +1,26 @@
+{
+  "link": [
+    {
+      "name": "official",
+      "href": "https://FCL-Team.github.io/"
+    },
+    {
+      "name": "Github",
+      "href": "https://github.com/FCL-Team/foldcraftlauncher/"
+    }
+  ],
+  "intro": [
+    {
+      "title": "GH-README",
+      "url": "https://github.com/FCL-Team/FoldCraftLauncher/blob/main/README.md",
+      "type": "md"
+    }
+  ],
+  "releaseHistoryUrl": "https://api.github.com/repos/FCL-Team/FoldCraftLauncher/releases",
+  "download": [
+    {
+      "mirrorId": 1,
+      "key": "/api/public/v1/projects/FoldCraftLauncher/assets"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+[
+  {
+    "id": 0,
+    "name": "XiaoluoFoxington",
+    "secondName": "洛狐",
+    "avatar": "/media/avatar/XiaoluoFoxington.avif",
+    "link": [
+      {
+        "name": "Github",
+        "href": "https://github.com/XiaoluoFoxington"
+      },
+      {
+        "name": "Bilibili",
+        "href": "https://space.bilibili.com/1561166904"
+      }
+    ],
+    "content": "网站站长"
+  },
+  {
+    "id": 1,
+    "name": "枫源",
+    "secondName": "哈哈66623332",
+    "avatar": "https://frostlynx.work/images/haha.jpg",
+    "link": [
+      {
+        "name": "website",
+        "href": "https://fengyuan.frostlynx.work/"
+      }
+    ]
+  }
+]

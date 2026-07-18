@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-cn">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
+
+  <link rel="stylesheet" href="https://unpkg.com/mdui@1.0.2/dist/css/mdui.min.css">
+  <link rel="stylesheet" href="/css/mdui.edit.css">
+  <link rel="stylesheet" href="/css/xf.css">
+  <title>资源列表</title>
+</head>
+
+<body class="mdui-appbar-with-toolbar mdui-container-fluid mdui-theme-layout-auto">
+  <div class="mdui-appbar mdui-appbar-fixed">
+    <div class="mdui-toolbar mdui-color-theme">
+      <a href="javascript: window.history.back();" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon material-icons">arrow_back</i></a>
+      <a href="/" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon material-icons">home</i></a>
+      <a href="/" class="mdui-typo-title">资源列表</a>
+      <div class="mdui-toolbar-spacer"></div>
+      <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon material-icons">more_vert</i></a>
+    </div>
+  </div>
+
+  <div>
+    <div class="mdui-panel" mdui-panel>
+      <div class="mdui-panel-item mdui-panel-item-open">
+        <div class="mdui-panel-item-header mdui-ripple">
+          <div>筛选</div>
+          <i class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+        </div>
+        <div class="mdui-panel-item-body">
+          <div class="mdui-textfield">
+            <input class="mdui-textfield-input" type="text" placeholder="搜索" />
+          </div>
+          <div id="filter-tag">
+            <!-- 将由JS生成 -->
+             <a class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent">显示所有</a>
+             <a class="mdui-btn mdui-btn-raised mdui-ripple">tag1</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="mdui-panel-item mdui-panel-item-open">
+        <div class="mdui-panel-item-header mdui-ripple">
+          <div>列表</div>
+          <i class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+        </div>
+        <div class="mdui-panel-item-body">
+          <div id="list-content">
+            <!-- 将由JS生成 -->
+            <div class="xf-list-item">
+              <a href="/detail?id=id">
+                <div class="mdui-card mdui-ripple">
+                  <img src="/data/software/0/iocn.avif">
+                  <span class="mdui-card-primary-title">Fold Craft Launcher</span>
+                  <span class="mdui-card-primary-subtitle">ID: 0</span>
+                  <span class="mdui-card-primary-subtitle">TAGS: tag1, tag2, …</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/mdui@1.0.2/dist/js/mdui.min.js"></script>
+</body>
+
+</html>

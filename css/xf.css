@@ -10,3 +10,19 @@
   mask-composite: add;
   
 }
+
+#list-content a {
+  text-decoration: none;
+}
+
+.xf-list-item {
+  width: 100%;
+  margin: 8px 0;
+
+  img {
+    object-fit: contain;
+    height: 96px;
+    width: 96px;
+    float: left;
+  }
+}

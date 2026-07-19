@@ -33,4 +33,30 @@ export default class data {
     return results;
   }
 
+  /**
+   * 获取单个软件的详情数据
+   * @param {number} id - 软件 ID
+   * @returns {Promise<{basic: {name: string, icon: string, tagId: number[]}, detail: {info: Array, intro: Array, releaseHistoryUrl: string, download: Array}}>}
+   */
+  static async fetchSoftwareDetail(id) {
+    const [basicResponse, detailResponse] = await Promise.all([
+      fetch(`/data/software/${id}/basic.json`),
+      fetch(`/data/software/${id}/detail.json`)
+    ]);
+
+    const basic = await basicResponse.json();
+    const detail = await detailResponse.json();
+
+    return { basic, detail };
+  }
+
+  /**
+   * 获取反馈渠道
+   * @returns {Promise<Array<{name: string, href: string}>>}
+   */
+  static async fetchFeedbackChannels() {
+    const response = await fetch('/data/feedback.json');
+    return await response.json();
+  }
+
 }

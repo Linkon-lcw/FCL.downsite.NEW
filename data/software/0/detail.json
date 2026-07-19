@@ -1,7 +1,11 @@
 {
-  "link": [
+  "info": [
     {
-      "name": "official",
+      "name": "developer",
+      "href": "https://github.com/FCL-Team"
+    },
+    {
+      "name": "official website",
       "href": "https://FCL-Team.github.io/"
     },
     {
@@ -11,9 +15,9 @@
   ],
   "intro": [
     {
-      "title": "GH-README",
-      "url": "https://github.com/FCL-Team/FoldCraftLauncher/blob/main/README.md",
-      "type": "md"
+      "title": "介绍",
+      "url": "intro.html",
+      "type": "html"
     }
   ],
   "releaseHistoryUrl": "https://api.github.com/repos/FCL-Team/FoldCraftLauncher/releases",

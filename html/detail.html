@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-cn">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
+
+  <link rel="stylesheet" href="https://unpkg.com/mdui@1.0.2/dist/css/mdui.min.css">
+  <link rel="stylesheet" href="/css/mdui.edit.css">
+  <link rel="stylesheet" href="/css/xf.css">
+  <title>错误</title>
+</head>
+
+<body class="mdui-appbar-with-toolbar mdui-container-fluid mdui-theme-layout-auto">
+  <div class="mdui-appbar mdui-appbar-fixed">
+    <div class="mdui-toolbar mdui-color-theme">
+      <a href="javascript: window.history.back();" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon material-icons">arrow_back</i></a>
+      <a href="/" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon material-icons">home</i></a>
+      <a href="list.html" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon material-icons">list</i></a>
+      <a href="" class="mdui-btn mdui-btn-icon mdui-ripple"><img src="" class="mdui-img-fluid" id="icon"></a>
+      <a href="" class="mdui-typo-title" id="title">错误</a>
+      <div class="mdui-toolbar-spacer"></div>
+      <a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon material-icons">more_vert</i></a>
+    </div>
+  </div>
+
+  <div>
+    <div class="mdui-panel" mdui-panel>
+      <div class="mdui-panel-item mdui-panel-item-open">
+        <div class="mdui-panel-item-header mdui-ripple">
+          <div>操作</div>
+          <i class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+        </div>
+        <div class="mdui-panel-item-body" id="operationTable">
+          <div>
+            <div class="mdui-row">
+              <div class="mdui-col-xs-12 mdui-col-sm-4">
+                <a id="btn-download" class="mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple" href="/html/detail/down.html"><i class="mdui-icon material-icons">file_download</i> 下载资源</a>
+              </div>
+              <div class="mdui-col-xs-12 mdui-col-sm-4">
+                <a id="btn-intro" class="mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple" href="/html/detail/intro.html"><i class="mdui-icon material-icons">description</i> 介绍文档</a>
+              </div>
+              <div class="mdui-col-xs-12 mdui-col-sm-4">
+                <a id="btn-history" class="mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple" href="javascript:;" target="_blank"><i class="mdui-icon material-icons">track_changes</i> 版本历史</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mdui-panel-item mdui-panel-item-open">
+        <div class="mdui-panel-item-header mdui-ripple">
+          <div>基本信息</div>
+          <i class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+        </div>
+        <div class="mdui-panel-item-body mdui-typo" id="infoTable">
+          <!-- 应由JS动态生成，下方为示例 -->
+          <div class="mdui-table-fluid">
+            <table class="mdui-table">
+              <thead>
+                <tr>
+                  <th>名称</th>
+                  <th>值</th>
+                </tr>
+              </thead>
+              <tbody id="basic-info-body">
+                <!-- 将由JS生成 -->
+                <tr><td colspan="2"><div class="mdui-spinner"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/mdui@1.0.2/dist/js/mdui.min.js"></script>
+  <script type="module" src="/js/theme.js"></script>
+  <script type="module" src="/js/detail.js"></script>
+</body>
+
+</html>

@@ -56,7 +56,7 @@ function renderList(softwareData, tags) {
     listItem.innerHTML = `
       <a href="/html/detail.html?id=${item.id}">
         <div class="mdui-card mdui-ripple">
-          <img src="/data/software/${item.id}/${item.icon}" alt="${item.name}">
+          <img src="${item.icon}" alt="${item.name}">
           <span class="mdui-card-primary-title">${item.name}</span>
           <span class="mdui-card-primary-subtitle">ID: ${item.id}</span>
           <span class="mdui-card-primary-subtitle tag-subtitle">TAG: ${tagNames.join(', ')}</span>

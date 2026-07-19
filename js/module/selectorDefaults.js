@@ -12,8 +12,6 @@ const ARCH_MAP = {
   'x86': 'x86',
 };
 
-const COLUMN_HEADERS = ['操作', '架构', '描述', '大小', '显示名称', 'URL'];
-
 function inferArchFromStr(str) {
   if (!str) return '';
   const key = Object.keys(ARCH_MAP).find(k => str.includes(k));

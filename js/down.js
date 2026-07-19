@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     renderPage(id, basic, detail, mirrors);
   } catch (err) {
-    showError(err);
+    showError(err instanceof Error ? err.message : String(err));
   }
 });
 
@@ -104,8 +104,7 @@ function buildCascadeData(basic, downloads, mirrors) {
 /**
  * 显示错误信息
  */
-function showError(message) {
-  const msg = message instanceof Error ? message.message : String(message);
+function showError(msg) {
   console.error('下载：错误：', msg);
 
   const titleEl = document.getElementById('title');

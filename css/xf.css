@@ -5,10 +5,10 @@
 .xf-nav-icon {
   position: absolute;
   mask-image: radial-gradient(circle at bottom right,
-    rgba(0, 0, 0, 1) 0%,
-    rgba(0, 0, 0, 0) 50%);
+  rgba(0, 0, 0, 1) 0%,
+  rgba(0, 0, 0, 0) 50%);
   mask-composite: add;
-  
+
 }
 
 #list-content a {
@@ -18,13 +18,13 @@
 .xf-list-item {
   width: 100%;
   margin: 8px 0;
+}
 
-  img {
-    object-fit: contain;
-    height: 96px;
-    width: 96px;
-    float: left;
-  }
+.xf-list-item img {
+  object-fit: contain;
+  height: 96px;
+  width: 96px;
+  float: left;
 }
 
 .xf-detail-icon {

@@ -38,7 +38,7 @@ export default class utils {
   }
 
   /**
-   * 将多个Uint8Array合并为一个将多个Uint8Array合并为一个
+   * 将多个Uint8Array合并为一个
    */
   static concatChunks(chunks) {
     const totalLength = chunks.reduce((acc, chunk) => acc + chunk.length, 0);

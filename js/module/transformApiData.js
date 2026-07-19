@@ -299,22 +299,25 @@ static transformFengyuanApiData(data) {
     default: version === latestVersion,
     children: (versionMap[version] || []).map(asset => ({
       name: asset.file_name,
-      arch: inferArch(asset.architecture, asset.file_name),
+      arch: transformApiData.inferFengyuanArch(asset.architecture, asset.file_name),
       url: baseUrl + asset.download_path,
       size: asset.size_bytes,
       available: asset.available
     }))
   }));
+}
 
-  function inferArch(rawArch, name) {
-    if (rawArch == 'None') {
-      if (name.includes('Zalith')) {
-        return 'all';
-      }
-    }
-    return rawArch;
+/**
+ * 推断fengyuan线路的架构
+ * @param {string} rawArch - 原始架构
+ * @param {string} name - 文件名
+ * @returns {string} 推断后的架构
+ */
+static inferFengyuanArch(rawArch, name) {
+  if (rawArch == 'None' && name.includes('Zalith')) {
+    return 'all';
   }
-
+  return rawArch;
 }
 
 

@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   renderFilterTags(tags);
   renderList(softwareData, tags);
 
-  bindFilterEvents(softwareData, tags);
+  bindFilterEvents();
 });
 
 /**
@@ -70,10 +70,8 @@ function renderList(softwareData, tags) {
 
 /**
  * 绑定筛选事件
- * @param {Array} softwareData
- * @param {Array<{id: number, name: string}>} tags
  */
-function bindFilterEvents(softwareData, tags) {
+function bindFilterEvents() {
   const activeTagIds = new Set();
 
   const filterContainer = document.getElementById('filter-tag');
@@ -112,23 +110,21 @@ function bindFilterEvents(softwareData, tags) {
       }
     }
 
-    applyFilter(softwareData, tags, activeTagIds, searchInput.value);
+    applyFilter(activeTagIds, searchInput.value);
   });
 
   // 搜索输入事件
   searchInput.addEventListener('input', function () {
-    applyFilter(softwareData, tags, activeTagIds, searchInput.value);
+    applyFilter(activeTagIds, searchInput.value);
   });
 }
 
 /**
  * 应用筛选条件
- * @param {Array} softwareData
- * @param {Array<{id: number, name: string}>} tags
  * @param {Set<string>} activeTagIds - 当前选中的标签ID集合（空表示显示所有）
  * @param {string} searchText - 搜索文本
  */
-function applyFilter(softwareData, tags, activeTagIds, searchText) {
+function applyFilter(activeTagIds, searchText) {
   const items = document.querySelectorAll('#list-content .xf-list-item');
 
   items.forEach((item) => {

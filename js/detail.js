@@ -1,4 +1,5 @@
 import data from './module/data.js';
+import utils from './module/utils.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
   const ele = {
@@ -11,7 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     btnHistory: document.getElementById('btn-history'),
   };
 
-  const id = getSoftwareId();
+  const id = utils.getSoftwareId();
   if (id === null) {
     await showError('未指定软件 ID', ele);
     return;
@@ -27,18 +28,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     await showError(err, ele);
   }
 });
-
-/**
- * 从 URL 参数中获取软件 ID
- * @returns {number|null}
- */
-function getSoftwareId() {
-  const params = new URLSearchParams(window.location.search);
-  const idStr = params.get('id');
-  if (!idStr) return null;
-  const id = parseInt(idStr, 10);
-  return isNaN(id) ? null : id;
-}
 
 /**
  * 渲染整个页面

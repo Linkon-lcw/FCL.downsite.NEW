@@ -1,0 +1,321 @@
+import loadContent from './loadContent.js';
+
+export default class transformApiData {
+
+  /**
+   * 根据 apiVer 转换数据
+   * @param {Object || Array} data - 原始数据
+   * @param {string} apiVer - API 版本
+   * @param {string} container - 选择器容器元素
+   * @param {boolean} random - 是否随机为一个项设为默认值
+   * @param {string} selectName - 当前选中的软件名称
+   * @returns {Array} 转换后的数据
+   */
+  static async transformDataIfNecessary(data, apiVer, container, random, selectName) {
+    console.log('选择器模块：转换数据：selectName：', selectName);
+    if (!this.validateItems(data) && !apiVer) {
+      console.warn('选择器模块：转换数据：补兑');
+      return data;
+    }
+
+    switch (apiVer) {
+      case "Way2old": {
+        const latestWay2old = await this.getWay2oldApiLatestVersion(data, selectName);
+        data = this.transformWay2oldApiData(data, latestWay2old);
+        break;
+      }
+      case "frostlynx": {
+        const latestFrostlynx = await this.getWay2oldApiLatestVersion(data, selectName);
+        data = this.transformFrostlynxApiData(data, latestFrostlynx);
+        break;
+      }
+      case "Lemwood": {
+        const latestLemwood = await this.getLemwoodApiLatestVersion(selectName);
+        data = this.transformLemwoodApiData(data, latestLemwood);
+        break;
+      }
+      case "LemwoodLatest": {
+        data = this.transformLemwoodLatestApiData(data);
+        break;
+      }
+      case "cxsjmc": {
+        data = await this.transformCxsjmcApiData(data);
+        break;
+      }
+      case "fengyuan": {
+        data = this.transformFengyuanApiData(data);
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+    if (random) {
+      data = this.randomSelect(data);
+    }
+    return data;
+  }
+
+  /**
+   * 判断数据是否为对象或数组
+   * @param {Object || Array} data - 原始数据
+   * @returns {boolean} 是否为对象或数组
+   */
+  static validateItems(data) {
+    return Array.isArray(data) || (data && typeof data === 'object');
+  }
+
+  /**
+   * 随机选择一个项设为默认值
+   * @param {Array} data - 原始数据
+   * @returns {Array} 转换后的数据
+   */
+  static randomSelect(data) {
+    if (!Array.isArray(data) || data.length === 0) {
+      return data;
+    }
+
+    // 重置所有项的 default 为 false
+    data.forEach(item => {
+      item.default = false;
+    });
+
+    const availableItems = data.filter(item => {
+      // 只有 notJoinRandom 明确为 true 时，才排除；其他情况（undefined/null/false）都参与
+      return item.notJoinRandom !== true;
+    });
+
+    if (availableItems.length === 0) {
+      console.warn('选择器模块：随机选择：无可用参与随机的项');
+      return data;
+    }
+
+    const randomAvailableIndex = Math.floor(Math.random() * availableItems.length);
+    const selectedItem = availableItems[randomAvailableIndex];
+    const originalIndex = data.indexOf(selectedItem); // 获取原数组中的索引
+
+    console.log(`选择器模块：随机选择：项索引：${originalIndex}`);
+    selectedItem.default = true;
+
+    return data;
+  }
+
+  /**
+   * 转换frostlynx数据
+   * @param {Object} data - 原始数据
+   * @param {string} latest - 最新版本名称
+   * @returns {Array} 转换后的数据
+   */
+  static transformFrostlynxApiData(data, latest) {
+    const versions = data?.versions || {};
+    // const latestVersion = data?.latest || '';
+    const latestVersion = latest;
+
+    const result = Object.entries(versions).map(([versionNumber, itemList]) => {
+      const children = (itemList || []).map(item => ({
+        url: item.link || ''
+      }));
+
+      return {
+        name: versionNumber,
+        default: versionNumber === latestVersion,
+        children: children
+      };
+    });
+
+    return result;
+  }
+
+  /**
+   * 转换Way2old API数据
+   * @param {Object} data - 原始数据
+   * @param {string} latest - 最新版本名称
+   * @returns {Array} 转换后的数据
+   */
+  static transformWay2oldApiData(data, latest) {
+    const result = [];
+    const itemsToProcess = Array.isArray(data) ? data : (data.children || []);
+
+    itemsToProcess.forEach(item => {
+      if (item.type === "directory") {
+        result.push({
+          name: item.name,
+          description: item.description || '',
+          children: item.children ? this.transformWay2oldApiData(item.children, latest) : [],
+          default: item.name === latest
+        });
+      } else if (item.type === "file") {
+        result.push({
+          name: item.arch + ' 架构',
+          url: item.download_link,
+          arch: item.arch || ''
+        });
+      } else {
+        console.warn("选择器模块：转换Way2old：忽略未知类型项：", item);
+      }
+    });
+
+    return result;
+  }
+  /**
+   * 获取Way2old API最新版本
+   * @param {Object} data - 原始数据
+   * @param {string} selectName - 当前选中的软件名称
+   * @returns {string} 最新版本名称
+   */
+  static async getWay2oldApiLatestVersion(data, selectName) {
+    const repoMap = {
+      'Fold Craft Launcher': 'FCL-Team/FoldCraftLauncher',
+      'Zalith Launcher 2': 'ZalithLauncher/ZalithLauncher2',
+    };
+
+    console.log(`选择器模块：Way2Old线：latest：通过原始数据获取：${data.latest}`);
+
+    if (!selectName) {
+      console.error('选择器模块：Way2Old线：无法获取当前选择的软件名称');
+      return null;
+    }
+    selectName = repoMap[selectName] || selectName;
+    const repoRelInfo = await loadContent.fetchItems(`https://api.github.com/repos/${selectName}/releases/latest`, 'json');
+    const latest = repoRelInfo.tag_name;
+    if (latest) {
+      console.log(`选择器模块：Way2Old线：latest：通过GH获取成功，将忽略原始数据。`);
+      console.log(`选择器模块：Way2Old线：latest：通过GH获取：${latest}`);
+      return latest;
+    } else {
+      return data.latest;
+    }
+
+  }
+
+  /**
+   * 转换Lemwood API数据
+   * @param {Object} data - 原始数据
+   * @param {string} latest - 最新版本名称
+   * @returns {Array} 转换后的数据
+   */
+  static transformLemwoodApiData(data, latest) {
+    // 适配 v2 统一信封 {data, error, meta}
+    const payload = data?.data ?? data;
+    return payload.map(item => ({
+      name: item.name,
+      default: item.name === latest,
+      children: item.assets?.map(asset => ({
+        name: asset.name,
+        url: asset.url,
+        size: asset.size
+      })) || []
+    }));
+  }
+
+  /**
+   * 转换Lemwood（只有最新条目）API数据
+   * @param {Object} data - 原始数据
+   * @returns {Array} 转换后的数据
+   */
+  static transformLemwoodLatestApiData(data) {
+    // 适配 v2 统一信封 {data, error, meta}
+    const payload = data?.data ?? data;
+    return this.transformLemwoodApiData([payload]);
+  }
+
+  /**
+   * 获取Lemwood API最新版本
+   * @param {string} selectName - 当前选中的软件名称
+   * @returns {string} 最新版本名称
+   */
+  static async getLemwoodApiLatestVersion(selectName) {
+    const apiMap = {
+      'Fold Craft Launcher': 'fcl',
+      'Zalith Launcher': 'zl',
+      'Zalith Launcher 2': 'zl2',
+      'HMCL': 'hmcl',
+      'Vulkan 驱动': 'FCL_Turnip',
+      '渲染器': 'MG',
+    };
+
+    if (!selectName) {
+      console.warn('选择器模块：Lemwood线：无法获取当前选择的软件名称');
+      return null;
+    }
+    selectName = apiMap[selectName] || null;
+    if (selectName === null) {
+      console.warn('选择器模块：Lemwood线：latest：选择器的文本不在映射中');
+      return null;
+    }
+    const latest = await loadContent.fetchItems(`https://miawa.cn/api/v2/latest/${selectName}`, 'text');
+    console.log(`选择器模块：Lemwood线：latest：${latest}`);
+    return latest;
+  }
+
+  /**
+   * 转换cxsjmc API数据
+   * @param {Object} data - 原始数据（已废弃，此线路不需要提供）
+   * @returns {Promise<Array>} 转换后的数据
+   */
+  static async transformCxsjmcApiData(data) {
+    const response = await loadContent.fetchItems('https://api.github.com/repos/FCL-Team/FoldCraftLauncher/releases/latest', 'json');
+    const assets = response.assets || [];
+    return assets.map(asset => ({
+      name: asset.name,
+      url: `https://fcl.cxsjmc.cn/FCL/${asset.name}`
+    }));
+  }
+
+/**
+ * 转换fengyuan API数据
+ * @param {Object} data - 原始数据
+ * @returns {Array} 转换后的数据
+ */
+static transformFengyuanApiData(data) {
+  const baseUrl = 'https://fyhub.cn';
+  const assets = data?.data?.assets || [];
+
+  // 按版本分组
+  const versionMap = {};
+  assets.forEach(asset => {
+    if (!versionMap[asset.version]) {
+      versionMap[asset.version] = [];
+    }
+    versionMap[asset.version].push(asset);
+  });
+
+  // 版本号排序（从高到低）
+  const versions = Object.keys(versionMap).sort((a, b) => {
+    const partsA = a.split('.').map(Number);
+    const partsB = b.split('.').map(Number);
+    for (let i = 0; i < Math.max(partsA.length, partsB.length); i++) {
+      const numA = partsA[i] || 0;
+      const numB = partsB[i] || 0;
+      if (numA !== numB) return numB - numA;
+    }
+    return 0;
+  });
+
+  const latestVersion = versions[0]; // 最高版本为默认
+
+  return versions.map(version => ({
+    name: version,
+    default: version === latestVersion,
+    children: (versionMap[version] || []).map(asset => ({
+      name: asset.file_name,
+      arch: inferArch(asset.architecture, asset.file_name),
+      url: baseUrl + asset.download_path,
+      size: asset.size_bytes,
+      available: asset.available
+    }))
+  }));
+
+  function inferArch(rawArch, name) {
+    if (rawArch == 'None') {
+      if (name.includes('Zalith')) {
+        return 'all';
+      }
+    }
+    return rawArch;
+  }
+
+}
+
+
+}

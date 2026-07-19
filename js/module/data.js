@@ -59,4 +59,12 @@ export default class data {
     return await response.json();
   }
 
+  /**
+ * 获取线路（镜像）数据
+ */
+  static async fetchMirrors() {
+    const response = await fetch('/data/mirror.json');
+    return await response.json();
+  }
+
 }

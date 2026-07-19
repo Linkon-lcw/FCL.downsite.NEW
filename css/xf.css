@@ -32,3 +32,11 @@
   max-width: 64px;
   object-fit: contain;
 }
+
+.xf-hide {
+  display: none;
+}
+
+.description {
+  margin: 1rem 0;
+}

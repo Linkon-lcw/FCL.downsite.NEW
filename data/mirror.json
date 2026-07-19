@@ -15,5 +15,16 @@
     "contributeId": [
       1
     ]
+  },
+  {
+    "id": 9,
+    "name": "线路10",
+    "baseUrl": "https://miawa.cn",
+    "apiVer": "Lemwood"
+  },
+  {
+    "id": 10,
+    "name": "线路11",
+    "baseUrl": "https://mirror.cxsjmc.cn"
   }
 ]

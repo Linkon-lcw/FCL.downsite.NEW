@@ -25,6 +25,14 @@
     {
       "mirrorId": 1,
       "key": "/api/public/v1/projects/FoldCraftLauncher/assets"
+    },
+    {
+      "mirrorId": 9,
+      "key": "/api/v2/launchers/fcl"
+    },
+    {
+      "mirrorId": 10,
+      "key": "/api/v1/FCL/"
     }
   ]
 }

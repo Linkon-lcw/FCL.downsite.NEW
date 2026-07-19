@@ -102,9 +102,9 @@ function renderBasicInfo(id, tbody, basic, detail, tags) {
  * @param {{btnDownload, btnIntro, btnHistory}} ele
  */
 function updateActionButtons(id, detail, ele) {
-  if (ele.btnDownload) ele.btnDownload.href = `/html/detail/down.html?id=${id}`;
-  if (ele.btnIntro) ele.btnIntro.href = `/html/detail/intro.html?id=${id}`;
-  if (ele.btnHistory) ele.btnHistory.href = `/html/detail/rh.html?id=${id}`;
+  if (ele.btnDownload) ele.btnDownload.href = `/html/down.html?id=${id}`;
+  if (ele.btnIntro) ele.btnIntro.href = `/html/intro.html?id=${id}`;
+  if (ele.btnHistory) ele.btnHistory.href = `/html/rh.html?id=${id}`;
 }
 
 /**

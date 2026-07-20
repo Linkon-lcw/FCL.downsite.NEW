@@ -1,5 +1,5 @@
-import utils from './module/utils.js';
-import { applyTheme } from './module/theme.js';
+import utils from '../module/utils.js';
+import { applyTheme } from '../module/theme.js';
 
 document.addEventListener('DOMContentLoaded', function () {
   const theme = utils.readLocalStorage('fdn-theme');

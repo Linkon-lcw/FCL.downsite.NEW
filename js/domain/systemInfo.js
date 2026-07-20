@@ -5,6 +5,11 @@ const ARCHITECTURES = [
   { pattern: /\bx86\b|i[36]86/i, name: 'x86' },
 ];
 
+// windows 系统不要根据平台来判断架构!!!
+// windows 系统不管是 64 位还是 32 位始终为 win32 平台
+// 再乱改我就炸了!!!
+//                                            晚梦
+
 export function detectSystemInfo() {
   if (typeof window.UAParser !== 'function') {
     return { osName: '', browserName: '', cpuArchitecture: '', matchedArchitecture: null };

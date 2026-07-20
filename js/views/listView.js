@@ -11,6 +11,7 @@ export function renderListError(elements, error, onRetry) {
 }
 
 export function renderFilterTags(container, tags, onChange) {
+  // 事件委托只绑定在容器一次，后续按钮的视觉状态由 activeTagIds 单一来源驱动。
   const activeTagIds = new Set();
   const fragment = document.createDocumentFragment();
   const allButton = createTagButton('显示所有', '', true);
@@ -22,6 +23,7 @@ export function renderFilterTags(container, tags, onChange) {
     const button = event.target.closest('button[data-tag-id]');
     if (!button) return;
     const tagId = button.dataset.tagId;
+    // “显示所有”不是一个普通标签：它清空集合，其他标签则允许多选。
     if (!tagId) activeTagIds.clear();
     else if (activeTagIds.has(tagId)) activeTagIds.delete(tagId);
     else activeTagIds.add(tagId);
@@ -31,6 +33,7 @@ export function renderFilterTags(container, tags, onChange) {
       candidate.classList.toggle('mdui-color-theme-accent', id ? activeTagIds.has(id) : activeTagIds.size === 0);
       candidate.setAttribute('aria-pressed', id ? String(activeTagIds.has(id)) : String(activeTagIds.size === 0));
     });
+    // 传副本而非内部 Set，防止 controller 意外修改 view 持有的状态。
     onChange(new Set(activeTagIds));
   });
 }
@@ -65,6 +68,7 @@ export function renderSoftwareList(container, software, tagMap) {
     image.alt = item.name;
     image.width = 96;
     image.height = 96;
+    // 列表扩大后，浏览器只在图片接近视口时下载/解码，宽高同时避免布局跳动。
     image.loading = 'lazy';
     image.decoding = 'async';
     card.append(image, createText('mdui-card-primary-title', item.name));

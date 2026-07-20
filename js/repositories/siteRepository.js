@@ -1,5 +1,6 @@
 import { getJSON } from '../http/client.js';
 
+// Repository 负责“取数据并验证数据契约”，不创建 DOM，也不掺入页面交互状态。
 function assertArray(value, label) {
   if (!Array.isArray(value)) throw new Error(`${label}数据格式不正确：应为数组`);
   return value;
@@ -16,6 +17,7 @@ function assertUniqueIds(items, label) {
 }
 
 export async function getSoftwareCatalog(options = {}) {
+  // 软件目录是列表页的唯一基础数据源，避免旧实现按软件逐一请求 basic.json。
   const items = assertUniqueIds(
     assertArray(await getJSON('/data/software.json', { ...options, cache: true }), '软件目录'),
     '软件目录',
@@ -47,6 +49,7 @@ export async function getFeedbackChannels(options = {}) {
 }
 
 export async function getSoftware(id, options = {}) {
+  // 先从目录定位详情路径，而不是将路径规则硬编码到各个页面入口中。
   const catalog = await getSoftwareCatalog(options);
   const basic = catalog.find((item) => item.id === id);
   if (!basic) throw new Error(`找不到 ID 为 ${id} 的软件`);

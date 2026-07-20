@@ -12,6 +12,7 @@ export function renderDetailError(elements, error, onRetry) {
 }
 
 function renderTableStatus(body, state, message, onRetry) {
+  // tbody 只能直接放 tr，不能把通用 div 状态组件直接插入表格。
   const row = document.createElement('tr');
   const label = document.createElement('td');
   const content = document.createElement('td');
@@ -25,6 +26,7 @@ export function renderDetail(elements, id, basic, detail, tags) {
   setSoftwareHeader(basic);
   elements.operations.hidden = false;
   const tagMap = new Map(tags.map((tag) => [tag.id, tag.name]));
+  // value 可以是字符串，也可以是受本 view 创建的安全 DOM 节点（图标或外链）。
   const rows = [
     ['名称', basic.name],
     ['图标', createIcon(basic)],
@@ -48,6 +50,7 @@ export function renderDetail(elements, id, basic, detail, tags) {
 
   elements.download.href = `/html/down.html?id=${id}`;
   elements.intro.href = `/html/intro.html?id=${id}`;
+  // rh.html 是预留入口，不能因为当前未实现就移除；原始历史 API 地址供未来页面读取。
   elements.history.href = `/html/rh.html?id=${id}`;
   if (isSafeNavigationUrl(detail.releaseHistoryUrl, { allowRelative: false })) {
     elements.history.dataset.releaseHistoryUrl = detail.releaseHistoryUrl;
@@ -67,6 +70,7 @@ function createIcon(basic) {
 }
 
 function createInfoValue(item) {
+  // 外部信息链接经过协议校验，并明确隔离新窗口的 opener。
   if (!item.href || !isSafeNavigationUrl(item.href)) return item.text || item.href || '';
   const link = document.createElement('a');
   link.href = item.href;

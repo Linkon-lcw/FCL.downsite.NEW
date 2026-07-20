@@ -4,19 +4,32 @@ import { createSafeContent } from '../security/content.js';
 import { createSelectorView } from '../views/selectorView.js';
 
 function isBottomLevel(items) {
+  // 只要还有 children、items 或 nextUrl，就应继续渲染下一级选择框；否则进入最终下载表格。
   return !items.some((item) =>
     (Array.isArray(item.children) && item.children.length)
     || item.nextUrl
     || (Array.isArray(item.items) && item.items.length));
 }
 
+/**
+ * @param {object} options
+ * @param {HTMLElement} options.container 选择器的挂载点
+ * @param {HTMLElement|null} options.stopButton 终止当前链路的按钮
+ * @param {Array<object>} options.dataSource 根级选择数据
+ * @returns {{start: () => void, abort: () => void}}
+ */
 export function createDownloadSelectorController(options) {
+  /**
+   * 选择器的状态机：一次“选择”拥有独立 AbortController 和递增序号。
+   * 即使某些上游服务忽略 abort 后仍返回数据，序号也会阻止旧响应覆盖新选择。
+   */
   const view = createSelectorView(options.container, options.stopButton, options.matchedArchitecture);
   let activeController = null;
   let requestSequence = 0;
   let softwareName = options.softwareName;
 
   function isCurrent(sequence) {
+    // 同时校验序号和 signal，覆盖“新请求已经开始”与“用户手动终止”两种过期情形。
     return sequence === requestSequence && !activeController?.signal.aborted;
   }
 
@@ -26,10 +39,12 @@ export function createDownloadSelectorController(options) {
       return;
     }
     try {
+      // 描述和下一级数据并行加载；描述失败不能阻止用户继续看到下载项。
       const content = item.descriptionUrl
         ? await loadDescription(item.descriptionUrl, signal)
         : item.description;
       if (!isCurrent(sequence)) return;
+      // 只有数据明确标记为 html 才会走净化后的富文本渲染，默认严格按文本显示。
       if (item.descriptionFormat === 'html') {
         const fragment = await createSafeContent(content, { type: 'html', baseUrl: item.descriptionUrl });
         if (isCurrent(sequence)) container.replaceChildren(fragment);
@@ -42,6 +57,7 @@ export function createDownloadSelectorController(options) {
   }
 
   function normalizeInlineChildren(item) {
+    // 内联 children 常用于本站配置；仍可声明 apiVersion 以复用某条线路的纯适配器。
     let children = item.children || item.items || [];
     if (item.apiVersion) {
       children = adaptDownloadData(children, item.apiVersion, { source: item.sourceName || item.name });
@@ -50,8 +66,10 @@ export function createDownloadSelectorController(options) {
   }
 
   async function resolveSelection(item, nextLevel, inheritedFilter, signal, sequence) {
+    // 子级未声明 filter 时继承父级，子级声明后覆盖父级规则。
     const nextFilter = item.filter !== undefined ? item.filter : inheritedFilter;
     let nodes;
+    // nextUrl 是惰性边界：只有用户选中该线路才访问外部镜像 API。
     if (item.nextUrl || (item.apiVersion && !item.children && !item.items)) {
       nodes = await loadDownloadNodes({
         url: item.nextUrl,
@@ -68,12 +86,14 @@ export function createDownloadSelectorController(options) {
     } else {
       nodes = [];
     }
+    // 外部请求完成后再次检查，绝不能把上一次选择的表格写回当前页面。
     if (!isCurrent(sequence)) return;
     renderNodes(nodes, nextLevel, nextFilter);
   }
 
   async function selectItem(item, level, description, inheritedFilter) {
     options.container.querySelector('.xf-cancel-notice')?.remove();
+    // 新选择立即取消旧选择链，防止快速切换镜像时出现竞态与无用流量。
     activeController?.abort();
     activeController = new AbortController();
     const sequence = ++requestSequence;
@@ -81,8 +101,10 @@ export function createDownloadSelectorController(options) {
     view.setBusy(true);
     if (item.nameIsSoftware) softwareName = item.name;
 
+    // 重试复用完全相同的选择上下文，但会取得新的序号和 AbortController。
     const retry = () => selectItem(item, level, description, inheritedFilter);
     try {
+      // 描述不依赖下级节点，两者并行可避免用户等待两段串行网络延迟。
       await Promise.all([
         renderDescription(item, description, activeController.signal, sequence),
         resolveSelection(item, level + 1, inheritedFilter, activeController.signal, sequence),
@@ -102,6 +124,7 @@ export function createDownloadSelectorController(options) {
       view.renderError(level, new Error('镜像数据格式不正确：应为数组'));
       return;
     }
+    // view 只接收已归一化的节点；这里决定它应显示选择框还是最终下载表格。
     if (isBottomLevel(items)) {
       view.renderDownloads(items, level, inheritedFilter, options.onDownload);
       return;
@@ -112,10 +135,12 @@ export function createDownloadSelectorController(options) {
   }
 
   function start() {
+    // 根节点渲染后 view 会自动选择默认项，从而保留“打开下载页自动加载默认线路”的体验。
     renderNodes(options.dataSource, 0);
   }
 
   function abort() {
+    // 先增加序号再取消，确保任何已在事件队列中的旧响应也立即失效。
     requestSequence += 1;
     activeController?.abort();
     activeController = null;
@@ -126,6 +151,7 @@ export function createDownloadSelectorController(options) {
     options.container.appendChild(notice);
   }
 
+  // 终止按钮由 view 的 busy 状态显示/隐藏，controller 只维护实际取消语义。
   options.stopButton?.addEventListener('click', abort);
   return { abort, start };
 }

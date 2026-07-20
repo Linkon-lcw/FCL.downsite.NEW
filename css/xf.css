@@ -41,6 +41,7 @@
   margin: 1rem 0;
 }
 
+/* 所有 controller 统一输出的加载、空态和错误态容器。 */
 .xf-status {
   padding: 12px;
   text-align: center;
@@ -55,15 +56,18 @@
   color: #d50000;
 }
 
+/* 下载表格的“推荐筛选”先隐藏未命中项，用户可点击按钮恢复显示。 */
 .xf-filter-hidden {
   display: none !important;
 }
 
+/* 绿色提示当前设备架构对应的下载行，同时复用给匹配说明。 */
 .xf-matched-arch,
 .xf-success-note {
   background-color: #00ff0040;
 }
 
+/* 历史介绍文案引用的截图不在仓库中时，用占位说明代替浏览器破图图标。 */
 .xf-missing-media {
   padding: 24px;
   border: 1px dashed currentColor;

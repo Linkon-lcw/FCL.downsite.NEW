@@ -1,5 +1,9 @@
 import { normalizeDownloadItem } from './common.js';
 
+/**
+ * Way2old 以 type=directory/file 表示树。递归函数只识别这两种已知节点，
+ * 未知节点静默忽略，防止上游新增展示字段破坏整条下载线路。
+ */
 export function adaptWay2old(payload, context) {
   const visit = (items, version = '') => (Array.isArray(items) ? items : items?.children || []).flatMap((item) => {
     if (item.type === 'directory') {

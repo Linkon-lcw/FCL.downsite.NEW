@@ -3,6 +3,7 @@ import { renderStatus } from '../views/commonView.js';
 import { isSafeNavigationUrl } from '../security/content.js';
 
 function createNavigationLink(label, href, iconName) {
+  // 所有抽屉链接通过 DOM API 创建，避免反馈渠道名称进入 HTML 字符串插值。
   const link = document.createElement('a');
   link.className = 'mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple';
   link.href = href;
@@ -32,10 +33,12 @@ function createPanel(title, content) {
 }
 
 async function loadFeedback(container) {
+  // 反馈渠道不是首屏必须内容；抽屉首次打开后才会调用此函数。
   renderStatus(container, 'loading', { message: '正在加载反馈渠道……' });
   try {
     const feedbacks = await getFeedbackChannels();
     const links = feedbacks
+      // 配置数据也必须校验，禁止误填 javascript: 等危险协议。
       .filter((feedback) => isSafeNavigationUrl(feedback.href, { allowRelative: false }))
       .map((feedback) => {
         const link = createNavigationLink(`通过${feedback.name}`, feedback.href, 'feedback');
@@ -52,6 +55,7 @@ async function loadFeedback(container) {
 }
 
 function createDrawer() {
+  // 抽屉 DOM 延迟到用户首次点击菜单才创建，普通页面加载不会请求 feedback.json。
   const drawer = document.createElement('aside');
   drawer.className = 'mdui-drawer mdui-drawer-right mdui-container-fluid';
   drawer.setAttribute('aria-label', '网站导航');
@@ -73,6 +77,7 @@ function createDrawer() {
   document.body.appendChild(drawer);
   document.body.classList.add('mdui-drawer-body-right');
   window.mdui.mutation();
+  // 创建外壳后异步填充反馈区；失败不会影响导航、设置等本地链接。
   loadFeedback(feedbackContainer);
   return new window.mdui.Drawer(drawer);
 }
@@ -80,6 +85,7 @@ function createDrawer() {
 document.addEventListener('DOMContentLoaded', () => {
   const button = document.getElementById('menu_btn');
   if (!button) return;
+  // 保留单例，后续开关不重复创建 DOM 或再次请求反馈数据。
   let drawerInstance = null;
   button.addEventListener('click', () => {
     if (!drawerInstance) drawerInstance = createDrawer();

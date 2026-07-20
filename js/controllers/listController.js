@@ -1,15 +1,23 @@
 import { getSoftwareCatalog, getTags } from '../repositories/siteRepository.js';
 import { renderFilterTags, renderListError, renderListLoading, renderSoftwareList } from '../views/listView.js';
 
+/**
+ * 资源列表 controller。
+ * elements.tags：标签按钮挂载点；elements.list：软件卡片挂载点；
+ * elements.search：搜索输入框。它们均来自 list.html 的固定 ID/类名。
+ */
 export function createListController(elements) {
+  // 筛选状态保存在 controller，view 每次只接收已经过滤好的纯数据。
   let catalog = [];
   let tagMap = new Map();
   let activeTagIds = new Set();
   let searchText = '';
 
   function applyFilters() {
+    // 标签是“命中任意一个即可”，搜索同时匹配名称和数字 ID。
     const normalizedSearch = searchText.trim().toLocaleLowerCase();
     const visible = catalog.filter((item) => {
+      // tagIds 在目录中是数字，按钮 dataset 始终是字符串，所以比较前统一转字符串。
       const matchesTags = !activeTagIds.size
         || item.tagIds.some((id) => activeTagIds.has(String(id)));
       const matchesSearch = !normalizedSearch
@@ -23,6 +31,7 @@ export function createListController(elements) {
   async function load() {
     renderListLoading(elements);
     try {
+      // 目录与标签无依赖关系，列表页首屏固定为两次并行静态请求。
       const [software, tags] = await Promise.all([getSoftwareCatalog(), getTags()]);
       const knownTags = new Set(tags.map((tag) => tag.id));
       software.forEach((item) => item.tagIds.forEach((id) => {

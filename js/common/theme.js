@@ -1,19 +1,25 @@
 import { readPreference, writePreference } from '../domain/preferences.js';
 import { applyTheme } from '../domain/theme.js';
 
+/**
+ * 主题设置页的页面入口。
+ * 同一个模块会在所有页面加载：没有对应 radio 容器时不会绑定事件，
+ * 但 applyTheme 仍会把本地保存的主题应用到 body。
+ */
 document.addEventListener('DOMContentLoaded', function () {
+  // 主题设置页才存在这些 radio 容器；其他页面会在各 helper 中安全地直接返回。
   const theme = readPreference('fdn-theme');
   const primary = readPreference('fdn-theme-primary');
   const accent = readPreference('fdn-theme-accent');
 
-  // 恢复单选框状态
+  // 恢复单选框状态，使设置页显示的值与先前保存的主题一致。
   restoreRadioState('theme-select', 'theme-layout', theme || 'auto');
   restoreRadioState('primary-select', 'theme-primary', primary || 'teal');
   restoreRadioState('accent-select', 'theme-accent', accent || 'green');
 
   applyTheme();
 
-  // 绑定事件监听
+  // 用容器级 change 监听兼容 MDUI 包装后的 radio，并在保存后即时应用主题。
   bindRadioEvent('theme-select', 'theme-layout', 'fdn-theme');
   bindRadioEvent('primary-select', 'theme-primary', 'fdn-theme-primary');
   bindRadioEvent('accent-select', 'theme-accent', 'fdn-theme-accent');

@@ -1,5 +1,14 @@
+/**
+ * 下载适配器共用工具。
+ * adapter 的职责是把上游任意结构变为两类节点：
+ * 1. 分组节点：{ name, default?, children }；
+ * 2. 下载叶子：{ name, version, architecture, size, description, downloadUrl, available, source }。
+ */
+
+// 不假设版本一定遵循严格 SemVer；提取连续数字可覆盖常见的 v1.2.3、2024.01 等命名。
 const VERSION_NUMBER = /\d+/g;
 
+/** 按版本从新到旧排序，供按版本分组的镜像选择默认项。 */
 export function compareVersionsDescending(left, right) {
   const leftParts = String(left).match(VERSION_NUMBER)?.map(Number) || [];
   const rightParts = String(right).match(VERSION_NUMBER)?.map(Number) || [];
@@ -10,7 +19,12 @@ export function compareVersionsDescending(left, right) {
   return 0;
 }
 
+/**
+ * 抽取不同上游的同义字段，构造唯一允许交给 view 的下载叶子结构。
+ * source 是人类可读线路名称；version 由父级分组传入，供后续展示/分析扩展。
+ */
 export function normalizeDownloadItem(item, source, version = '') {
+  // 各镜像字段名不同，只有这里允许读取其原始字段；后续 controller/view 只认识统一模型。
   const downloadUrl = item.downloadUrl || item.url || item.link || item.download_link || '';
   return {
     name: item.name || item.file_name || item.arch || downloadUrl.split('/').pop() || '下载',
@@ -24,7 +38,9 @@ export function normalizeDownloadItem(item, source, version = '') {
   };
 }
 
+/** 按配置随机标记一个 default=true 节点；notJoinRandom=true 的节点永不参与。 */
 export function randomlySelectDefault(items) {
+  // 不修改原数组项，避免同一份镜像响应被下一次选择复用时保留过期 default 状态。
   const candidates = items.filter((item) => item.notJoinRandom !== true);
   if (!candidates.length) return items;
   const chosen = candidates[Math.floor(Math.random() * candidates.length)];

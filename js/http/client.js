@@ -1,5 +1,19 @@
+/**
+ * 浏览器网络访问的唯一入口。
+ *
+ * options.signal：由页面/选择器传入，表示用户主动取消；
+ * options.timeoutMs：单次请求超时毫秒数，默认 15 秒；
+ * options.cache：是否复用本页生命周期内同 URL、同响应类型的 Promise。
+ */
+
+// 仅缓存本页生命周期内的“进行中/成功”请求；刷新页面后由浏览器 HTTP 缓存接管。
+// 键同时包含响应类型，避免同一 URL 被按 JSON 与文本两种方式解析时发生混用。
 const responseCache = new Map();
 
+/**
+ * 所有网络层错误的统一表示。
+ * kind 用于 controller 决定提示语和取消后的 UI 行为，不能只依赖浏览器各异的 Error.message。
+ */
 export class HttpError extends Error {
   constructor(message, { kind = 'network', url = '', status = null, cause } = {}) {
     super(message, { cause });
@@ -10,16 +24,25 @@ export class HttpError extends Error {
   }
 }
 
+/**
+ * 合并外部取消信号与内部超时信号。
+ * @param {AbortSignal|undefined} callerSignal controller 提供的用户取消信号
+ * @param {number} timeoutMs 超时毫秒数，传入非正数时不启用超时
+ * @returns {{signal: AbortSignal, didTimeOut: () => boolean, cleanup: () => void}}
+ */
 function createRequestSignal(callerSignal, timeoutMs) {
+  // 不直接给 fetch 使用调用者 signal：这里额外合并了超时信号，任一方取消都会结束请求。
   const controller = new AbortController();
   let timedOut = false;
 
+  // 保留外部取消原因，方便调用方区分“用户切换线路”和普通网络失败。
   const abortFromCaller = () => controller.abort(callerSignal.reason);
   if (callerSignal) {
     if (callerSignal.aborted) abortFromCaller();
     else callerSignal.addEventListener('abort', abortFromCaller, { once: true });
   }
 
+  // AbortController 本身不区分超时与用户取消，因此额外记录 timedOut 作为分类依据。
   const timeoutId = timeoutMs > 0
     ? window.setTimeout(() => {
       timedOut = true;
@@ -37,6 +60,13 @@ function createRequestSignal(callerSignal, timeoutMs) {
   };
 }
 
+/**
+ * 执行并解析一次请求。
+ * @param {string} url 绝对地址或本站根路径地址
+ * @param {'json'|'text'} responseType 成功响应的解析方式
+ * @param {{signal?: AbortSignal, timeoutMs?: number, cache?: boolean}} options 请求控制项
+ * @returns {Promise<unknown>} 已解析的响应；失败时抛出 HttpError
+ */
 async function request(url, responseType, options = {}) {
   const {
     signal,
@@ -45,6 +75,7 @@ async function request(url, responseType, options = {}) {
   } = options;
   const cacheKey = `${responseType}:${url}`;
 
+  // 缓存 Promise 而不是解析后的值：同一时刻多个消费者只会真正发起一次请求。
   if (cache && responseCache.has(cacheKey)) {
     return responseCache.get(cacheKey);
   }
@@ -52,6 +83,7 @@ async function request(url, responseType, options = {}) {
   const requestPromise = (async () => {
     const requestSignal = createRequestSignal(signal, timeoutMs);
     try {
+      // 所有业务代码只能经由本模块请求，确保 HTTP 状态与解析错误不会被遗漏。
       const response = await fetch(url, { signal: requestSignal.signal });
       if (!response.ok) {
         throw new HttpError(`HTTP ${response.status}：${response.statusText || '请求失败'}`, {
@@ -72,6 +104,7 @@ async function request(url, responseType, options = {}) {
       }
     } catch (error) {
       if (error instanceof HttpError) throw error;
+      // 判断顺序不能颠倒：超时同样会触发 abort，需要优先给用户“超时”而非“已取消”。
       if (requestSignal.didTimeOut()) {
         throw new HttpError(`请求超时：${url}`, { kind: 'timeout', url, cause: error });
       }
@@ -86,20 +119,28 @@ async function request(url, responseType, options = {}) {
 
   if (cache) {
     responseCache.set(cacheKey, requestPromise);
+    // 失败请求不可缓存，否则点击“重试”会永远复用同一个 rejected Promise。
     requestPromise.catch(() => responseCache.delete(cacheKey));
   }
   return requestPromise;
 }
 
+/** 获取 JSON 数据，适用于本站目录、标签、镜像配置及外部镜像 API。 */
 export function getJSON(url, options) {
   return request(url, 'json', options);
 }
 
+/** 获取纯文本，适用于介绍 Markdown、HTML 和线路描述。 */
 export function getText(url, options) {
   return request(url, 'text', options);
 }
 
+/**
+ * 清理内存请求缓存。
+ * @param {string|undefined} url 指定资源；省略时清理当前页面的全部缓存
+ */
 export function clearResponseCache(url) {
+  // url 为空时清空本页全部缓存；传入 URL 时只失效该资源的 JSON/文本两个变体。
   for (const key of responseCache.keys()) {
     if (!url || key.endsWith(`:${url}`)) responseCache.delete(key);
   }

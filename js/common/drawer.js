@@ -2,7 +2,14 @@ import { getFeedbackChannels } from '../repositories/siteRepository.js';
 import { renderStatus } from '../views/commonView.js';
 import { isSafeNavigationUrl } from '../security/content.js';
 
+/**
+ * 所有页面共用的右侧抽屉。
+ * 本模块只在页面存在 #menu_btn 时工作；创建抽屉和获取 feedback.json 都被推迟到首次点击。
+ */
+
+/** 创建本站固定导航链接；label 是按钮文案，iconName 是 Material Icons 名称。 */
 function createNavigationLink(label, href, iconName) {
+  // 所有抽屉链接通过 DOM API 创建，避免反馈渠道名称进入 HTML 字符串插值。
   const link = document.createElement('a');
   link.className = 'mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple';
   link.href = href;
@@ -13,6 +20,7 @@ function createNavigationLink(label, href, iconName) {
   return link;
 }
 
+/** 创建一个打开状态的 MDUI 面板项，content 为已创建好的 DOM 子节点数组。 */
 function createPanel(title, content) {
   const panelItem = document.createElement('div');
   panelItem.className = 'mdui-panel-item mdui-panel-item-open';
@@ -31,11 +39,17 @@ function createPanel(title, content) {
   return panelItem;
 }
 
+/**
+ * 将 data/feedback.json 转为外链按钮。
+ * 无效 URL 会被过滤；请求失败只替换反馈区域，不影响抽屉的本地导航。
+ */
 async function loadFeedback(container) {
+  // 反馈渠道不是首屏必须内容；抽屉首次打开后才会调用此函数。
   renderStatus(container, 'loading', { message: '正在加载反馈渠道……' });
   try {
     const feedbacks = await getFeedbackChannels();
     const links = feedbacks
+      // 配置数据也必须校验，禁止误填 javascript: 等危险协议。
       .filter((feedback) => isSafeNavigationUrl(feedback.href, { allowRelative: false }))
       .map((feedback) => {
         const link = createNavigationLink(`通过${feedback.name}`, feedback.href, 'feedback');
@@ -51,7 +65,9 @@ async function loadFeedback(container) {
   }
 }
 
+/** 创建、挂载并初始化抽屉，返回 MDUI 的 Drawer 实例供后续 toggle 调用。 */
 function createDrawer() {
+  // 抽屉 DOM 延迟到用户首次点击菜单才创建，普通页面加载不会请求 feedback.json。
   const drawer = document.createElement('aside');
   drawer.className = 'mdui-drawer mdui-drawer-right mdui-container-fluid';
   drawer.setAttribute('aria-label', '网站导航');
@@ -73,6 +89,7 @@ function createDrawer() {
   document.body.appendChild(drawer);
   document.body.classList.add('mdui-drawer-body-right');
   window.mdui.mutation();
+  // 创建外壳后异步填充反馈区；失败不会影响导航、设置等本地链接。
   loadFeedback(feedbackContainer);
   return new window.mdui.Drawer(drawer);
 }
@@ -80,8 +97,10 @@ function createDrawer() {
 document.addEventListener('DOMContentLoaded', () => {
   const button = document.getElementById('menu_btn');
   if (!button) return;
+  // 保留单例，后续开关不重复创建 DOM 或再次请求反馈数据。
   let drawerInstance = null;
   button.addEventListener('click', () => {
+    // 首次点击才承担创建成本；之后只调用 MDUI 实例的开关方法。
     if (!drawerInstance) drawerInstance = createDrawer();
     drawerInstance.toggle();
   });

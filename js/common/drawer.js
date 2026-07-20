@@ -4,7 +4,7 @@ import { isSafeNavigationUrl } from '../security/content.js';
 
 /**
  * 所有页面共用的右侧抽屉。
- * 本模块只在页面存在 #menu_btn 时工作；创建抽屉和获取 feedback.json 都被推迟到首次点击。
+ * 本模块只在页面存在 #menu_btn 时工作；窄屏下创建抽屉推迟到首次点击，宽屏则立即创建以适配 MDUI 持久展开。
  */
 
 /** 创建本站固定导航链接；label 是按钮文案，iconName 是 Material Icons 名称。 */
@@ -97,11 +97,30 @@ function createDrawer() {
 document.addEventListener('DOMContentLoaded', () => {
   const button = document.getElementById('menu_btn');
   if (!button) return;
+
+  const MDUI_LG_BREAKPOINT = 1024;
+  const isWideScreen = () => window.innerWidth >= MDUI_LG_BREAKPOINT;
+
   // 保留单例，后续开关不重复创建 DOM 或再次请求反馈数据。
   let drawerInstance = null;
-  button.addEventListener('click', () => {
-    // 首次点击才承担创建成本；之后只调用 MDUI 实例的开关方法。
+
+  const ensureDrawer = () => {
     if (!drawerInstance) drawerInstance = createDrawer();
-    drawerInstance.toggle();
+    return drawerInstance;
+  };
+
+  // 宽屏下 MDUI 抽屉持久可见，必须立即创建 DOM；窄屏仍保持懒加载。
+  if (isWideScreen()) ensureDrawer();
+
+  button.addEventListener('click', () => {
+    ensureDrawer().toggle();
+  });
+
+  // 窄屏 → 宽屏切换时，若抽屉尚未创建则自动创建，避免宽屏下抽屉区域空白。
+  let wasWide = isWideScreen();
+  window.addEventListener('resize', () => {
+    const nowWide = isWideScreen();
+    if (!wasWide && nowWide) ensureDrawer();
+    wasWide = nowWide;
   });
 });

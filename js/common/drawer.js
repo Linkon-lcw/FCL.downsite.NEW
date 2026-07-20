@@ -1,6 +1,18 @@
-document.addEventListener('DOMContentLoaded', function () {
+import data from '../module/data.js';
+
+document.addEventListener('DOMContentLoaded', async function () {
   const drawerBtn = document.getElementById('menu_btn');
   if (!drawerBtn) return;
+
+  let feedbackBtns = '';
+  try {
+    const feedbacks = await data.fetchFeedbackChannels();
+    feedbackBtns = feedbacks.map(f =>
+      `<a class="mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple" href="${f.href}" target="_blank"><i class="mdui-icon material-icons">feedback</i> 通过${f.name}</a>`
+    ).join('');
+  } catch (e) {
+    feedbackBtns = '<div class="mdui-typo"><p>加载失败</p></div>';
+  }
 
   const drawer = document.createElement('div');
   drawer.className = 'mdui-drawer mdui-drawer-right mdui-container-fluid';
@@ -26,8 +38,16 @@ document.addEventListener('DOMContentLoaded', function () {
       <a class="mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple" href="/html/theme.html"><i class="mdui-icon material-icons">style</i> 主题设置</a>
     </div>
   </div>
-</div>
-`;
+  <div class="mdui-panel-item mdui-panel-item-open">
+    <div class="mdui-panel-item-header mdui-ripple">
+      <div>建议反馈</div>
+      <i class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+    </div>
+    <div class="mdui-panel-item-body">
+      ${feedbackBtns}
+    </div>
+  </div>
+</div>`;
   document.body.appendChild(drawer);
 
   document.body.classList.add('mdui-drawer-body-right');

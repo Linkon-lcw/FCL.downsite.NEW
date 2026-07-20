@@ -1,3 +1,9 @@
+/**
+ * 远程内容安全边界。
+ * 所有来自镜像/第三方仓库的 HTML 和 Markdown 必须经 createSafeContent 处理后才能插入 DOM；
+ * 其他页面若仅需显示字符串，应直接使用 textContent，不应调用本模块。
+ */
+
 // 这两个依赖只在介绍正文或明确声明为 HTML 的远程描述首次展示时加载，
 // 完整性哈希防止 CDN 内容被替换后仍在本站上下文执行。
 const MARKED = {
@@ -16,6 +22,10 @@ const scriptPromises = new Map();
 /**
  * 懒加载固定版本的全局脚本。
  * 加载失败后会移除缓存，以便用户稍后重试，而不是永久保留失败状态。
+ */
+/**
+ * @param {{src: string, integrity: string, globalName: string}} dependency 外部脚本的固定地址、SRI 与全局变量名
+ * @returns {Promise<unknown>} 对应的 window 全局对象，例如 marked 或 DOMPurify
  */
 export function loadExternalScript({ src, integrity, globalName }) {
   if (window[globalName]) return Promise.resolve(window[globalName]);
@@ -41,6 +51,10 @@ export function loadExternalScript({ src, integrity, globalName }) {
   return promise;
 }
 
+/**
+ * 将富文本内的链接转为可安全使用的绝对地址。
+ * 仅允许 http/https；图片额外允许 data:image，禁止 javascript:、file: 等协议。
+ */
 function makeAbsoluteUrl(value, baseUrl, allowDataImage = false) {
   // 远程内容内的相对地址必须以原文档地址为基准解析，不能以下载站当前页面为基准。
   if (!value || value.startsWith('#')) return value;
@@ -84,6 +98,12 @@ function rewriteUrls(root, baseUrl) {
   });
 }
 
+/**
+ * 解析并净化远程正文。
+ * @param {string} rawContent 原始 HTML 或 Markdown 文本
+ * @param {{type?: 'html'|'md', baseUrl?: string}} options 内容类型与相对链接基准
+ * @returns {Promise<DocumentFragment>} 可直接 append/replaceChildren 的安全片段
+ */
 export async function createSafeContent(rawContent, { type = 'html', baseUrl } = {}) {
   // Markdown 先转 HTML，再与原生 HTML 走同一套白名单净化策略。
   const [DOMPurify, markdownParser] = await Promise.all([
@@ -106,6 +126,11 @@ export async function createSafeContent(rawContent, { type = 'html', baseUrl } =
   return template.content;
 }
 
+/**
+ * 判断动态 href/downloadUrl 是否可用。
+ * @param {unknown} value 待验证地址
+ * @param {{allowRelative?: boolean}} options 是否接受以 / 开头的本站地址
+ */
 export function isSafeNavigationUrl(value, { allowRelative = true } = {}) {
   // 动态写入 href 前的轻量校验；下载链接调用时会关闭相对路径支持。
   if (allowRelative && typeof value === 'string' && value.startsWith('/')) return true;

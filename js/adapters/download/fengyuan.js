@@ -3,6 +3,9 @@ import { compareVersionsDescending, normalizeDownloadItem } from './common.js';
 /**
  * 枫源 API 将文件平铺在 data.assets 中。本适配器按版本重新组成选择器树：
  * 版本节点 -> 统一下载项，最高版本自动成为默认版本。
+ * @param {object} payload 枫源返回的 { data: { assets: [] } }
+ * @param {{source: string, baseUrl: string}} context 线路显示名与 API 所在域名
+ * @returns {Array<object>} 按版本排序的分组节点
  */
 export function adaptFengyuan(payload, context) {
   const grouped = new Map();

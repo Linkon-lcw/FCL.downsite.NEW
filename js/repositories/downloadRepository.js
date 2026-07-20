@@ -1,6 +1,11 @@
 import { getJSON, getText } from '../http/client.js';
 import { adaptDownloadData, randomlySelectDefault } from '../adapters/download/index.js';
 
+/**
+ * 下载数据仓库。
+ * 它负责请求外部镜像与补充接口；adapter 只负责把已获得的 payload 转为统一节点。
+ * 统一的叶子下载项字段为：name、version、architecture、size、description、downloadUrl、available、source。
+ */
 // 只有少数旧协议需要额外访问 GitHub 才能标记“最新版本”；映射集中在此处，
 // adapter 保持纯函数，便于用固定输入测试。
 const GITHUB_REPOSITORIES = {
@@ -8,6 +13,10 @@ const GITHUB_REPOSITORIES = {
   'Zalith Launcher 2': 'ZalithLauncher/ZalithLauncher2',
 };
 
+/**
+ * 获取旧协议的最新版本标记。
+ * @returns {Promise<string|null>} 无法取得时返回镜像 payload 自带的 latest，非异常降级
+ */
 async function getLatestVersion(apiVersion, softwareName, payload, signal) {
   if (apiVersion !== 'Way2old' && apiVersion !== 'frostlynx') return payload?.latest || null;
   const repository = GITHUB_REPOSITORIES[softwareName];
@@ -26,6 +35,11 @@ async function getLatestVersion(apiVersion, softwareName, payload, signal) {
   }
 }
 
+/**
+ * 获取并适配一个选择器节点的下级数据。
+ * @param {{url?: string, apiVersion?: string, softwareName?: string, sourceName?: string, random?: boolean, signal?: AbortSignal}} options
+ * @returns {Promise<Array<object>>} 可继续选择的分组节点，或可直接渲染的统一下载叶子节点
+ */
 export async function loadDownloadNodes({
   url,
   apiVersion,
@@ -58,6 +72,7 @@ export async function loadDownloadNodes({
   return random ? randomlySelectDefault(nodes) : nodes;
 }
 
+/** 读取线路配置的远程说明文本；是否富文本由上层配置决定。 */
 export function loadDescription(url, signal) {
   // 描述默认按纯文本消费；是否允许 HTML 由 controller 中的 descriptionFormat 明确决定。
   return getText(url, { signal, timeoutMs: 15000 });

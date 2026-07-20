@@ -8,6 +8,12 @@ function joinUrl(baseUrl, key) {
   return `${String(baseUrl).replace(/\/$/, '')}/${String(key).replace(/^\//, '')}`;
 }
 
+/**
+ * 下载页 controller。
+ * elements.container：选择器和下载表格的唯一挂载点；
+ * elements.stopButton：只取消当前外部请求链，不会离开当前页面；
+ * softwareId：由 URL 校验后的整数 ID。
+ */
 export function createDownloadController(elements, softwareId) {
   let selectorController = null;
 
@@ -28,13 +34,16 @@ export function createDownloadController(elements, softwareId) {
       });
       // 通过 ID 建索引，既减少查找复杂度，也能明确检测 detail.json 中的错误 mirrorId。
       const mirrorMap = new Map(mirrors.map((mirror) => [mirror.id, mirror]));
+      // detail.download 项结构为 { mirrorId, key }：mirrorId 查配置，key 拼接到镜像 baseUrl 后请求。
       const mirrorItems = (detail.download || []).map((download) => {
         const mirror = mirrorMap.get(download.mirrorId);
         if (!mirror) throw new Error(`软件引用了不存在的镜像 ${download.mirrorId}`);
         return {
+          // name/sourceName 用于 UI 与最终统一下载项中的 source 字段。
           name: mirror.name,
           sourceName: mirror.name,
           nextUrl: joinUrl(mirror.baseUrl, download.key),
+          // apiVer 为空时走 plain adapter，允许旧镜像逐步迁移。
           apiVersion: mirror.apiVer,
         };
       });

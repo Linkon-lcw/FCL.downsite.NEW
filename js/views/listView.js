@@ -1,15 +1,21 @@
 import { renderStatus } from './commonView.js';
 
+/** 同时显示目录与标签两个并行请求的加载状态。 */
 export function renderListLoading(elements) {
   renderStatus(elements.list, 'loading', { message: '正在加载软件目录……' });
   renderStatus(elements.tags, 'loading', { message: '正在加载标签……' });
 }
 
+/** 目录失败时清空标签区，防止保留上一次加载的筛选按钮。 */
 export function renderListError(elements, error, onRetry) {
   renderStatus(elements.list, 'error', { message: error.message, onRetry });
   elements.tags.replaceChildren();
 }
 
+/**
+ * 渲染可多选的标签按钮。
+ * onChange 收到 Set<string>，空集合代表“显示所有”。
+ */
 export function renderFilterTags(container, tags, onChange) {
   // 事件委托只绑定在容器一次，后续按钮的视觉状态由 activeTagIds 单一来源驱动。
   const activeTagIds = new Set();
@@ -38,6 +44,7 @@ export function renderFilterTags(container, tags, onChange) {
   });
 }
 
+/** 创建单个可访问的 button，不使用无 href 的 a 标签模拟按钮。 */
 function createTagButton(label, tagId, selected = false) {
   const button = document.createElement('button');
   button.type = 'button';
@@ -49,6 +56,10 @@ function createTagButton(label, tagId, selected = false) {
   return button;
 }
 
+/**
+ * 将 controller 已筛选好的软件目录渲染为卡片。
+ * tagMap 的键为数值 tag ID，值为标签名；没有标签时保留原 ID 便于发现配置问题。
+ */
 export function renderSoftwareList(container, software, tagMap) {
   if (!software.length) {
     renderStatus(container, 'empty', { message: '没有符合条件的软件' });
@@ -82,6 +93,7 @@ export function renderSoftwareList(container, software, tagMap) {
   container.replaceChildren(fragment);
 }
 
+/** 创建只含文本的 span，避免软件名/标签名进入 HTML 字符串插值。 */
 function createText(className, value) {
   const element = document.createElement('span');
   element.className = className;

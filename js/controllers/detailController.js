@@ -6,6 +6,10 @@ import { renderDetail, renderDetailError, renderDetailLoading } from '../views/d
  * view 不需要知道网络层和数据校验规则。
  */
 export function createDetailController(elements, softwareId) {
+  /**
+   * 重新加载当前详情页。失败时把自身作为重试回调交给 view，
+   * 因此 view 不需要知道软件 ID 或请求函数。
+   */
   async function load() {
     renderDetailLoading(elements);
     try {

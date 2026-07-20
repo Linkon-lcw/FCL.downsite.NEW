@@ -15,6 +15,11 @@ function documentUrl(item) {
   return `${String(item.url || '').replace(/\/$/, '')}/${String(item.file || '').replace(/^\//, '')}`;
 }
 
+/**
+ * 介绍页 controller。
+ * container 是整个正文区域；states 的值只会是 loading、ready、error 或 undefined，
+ * 分别表示请求中、已缓存、上次失败、从未展开。
+ */
 export function createIntroController(container, softwareId) {
   // body 元素作为 WeakMap 键，页面销毁后状态可随 DOM 一起被回收。
   const states = new WeakMap();
@@ -29,6 +34,7 @@ export function createIntroController(container, softwareId) {
       const url = documentUrl(item);
       // 此请求发生在用户展开面板后，因此首屏不会下载 README/截图等非必要内容。
       const rawContent = await getText(url, { timeoutMs: 20000 });
+      // 返回 DocumentFragment 而非 HTML 字符串，view 可以直接安全地替换正文节点。
       const fragment = await createSafeContent(rawContent, {
         type: item.type === 'md' ? 'md' : 'html',
         baseUrl: url,

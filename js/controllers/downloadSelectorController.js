@@ -129,6 +129,7 @@ export function createDownloadSelectorController(options) {
       view.renderDownloads(items, level, inheritedFilter, options.onDownload);
       return;
     }
+    // view 将“用户在第几级选中了什么”回调回来；controller 是唯一会发请求的层。
     view.renderSelect(items, level, (item, description) => {
       selectItem(item, level, description, inheritedFilter);
     });

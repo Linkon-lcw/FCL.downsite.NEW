@@ -1,5 +1,10 @@
 import { readPreference, writePreference } from './preferences.js';
 
+/**
+ * MDUI 主题领域逻辑。
+ * theme/primary/accent 是 MDUI 类名中使用的值，不在这里校验枚举，
+ * 因为主题设置页的 radio 已限定可选值，旧 localStorage 值也应保持向后兼容。
+ */
 export function applyTheme(theme, primary, accent) {
   // 显式参数用于主题设置页即时预览；没有参数时从本地偏好恢复。
   const themeValue = theme || readPreference('fdn-theme') || 'auto';

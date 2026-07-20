@@ -1,10 +1,12 @@
 import { renderStatus, setErrorTitle, setSoftwareHeader } from './commonView.js';
 import { isSafeNavigationUrl } from '../security/content.js';
 
+/** 将详情表格置为加载状态，仍遵守 tbody 只能包含 tr 的 HTML 结构。 */
 export function renderDetailLoading(elements) {
   renderTableStatus(elements.body, 'loading', '正在加载软件详情……');
 }
 
+/** 展示详情错误并隐藏依赖有效软件 ID 的操作按钮区。 */
 export function renderDetailError(elements, error, onRetry) {
   setErrorTitle();
   renderTableStatus(elements.body, 'error', error.message, onRetry);
@@ -22,6 +24,11 @@ function renderTableStatus(body, state, message, onRetry) {
   body.replaceChildren(row);
 }
 
+/**
+ * 渲染完整详情表。
+ * basic 来自软件目录；detail.info 是可选的补充字段数组；
+ * tags 用于将 basic.tagIds 从数字翻译为人可读名称。
+ */
 export function renderDetail(elements, id, basic, detail, tags) {
   setSoftwareHeader(basic);
   elements.operations.hidden = false;
@@ -57,6 +64,7 @@ export function renderDetail(elements, id, basic, detail, tags) {
   }
 }
 
+/** 创建详情内的惰性图标节点；尺寸固定可减少表格首次渲染的布局变化。 */
 function createIcon(basic) {
   const image = document.createElement('img');
   image.src = basic.icon;
@@ -69,6 +77,7 @@ function createIcon(basic) {
   return image;
 }
 
+/** 将 detail.info 的一项转为纯文本或安全外链节点。 */
 function createInfoValue(item) {
   // 外部信息链接经过协议校验，并明确隔离新窗口的 opener。
   if (!item.href || !isSafeNavigationUrl(item.href)) return item.text || item.href || '';

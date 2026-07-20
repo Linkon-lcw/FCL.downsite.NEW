@@ -2,6 +2,11 @@ import { createDetailController } from './controllers/detailController.js';
 import { getSoftwareId } from './views/commonView.js';
 import { renderDetailError } from './views/detailView.js';
 
+/**
+ * 详情页入口。
+ * elements 的键名与 detailView 约定：body 为 tbody，operations 为操作按钮区域，
+ * download/intro/history 为会携带当前软件 ID 的三个入口。
+ */
 // 页面入口只收集 DOM 与 URL 参数；具体加载、校验和渲染分别交给 controller/view。
 document.addEventListener('DOMContentLoaded', () => {
   const elements = {

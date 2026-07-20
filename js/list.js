@@ -1,5 +1,9 @@
 import { createListController } from './controllers/listController.js';
 
+/**
+ * 列表页入口。tags/list/search 三个元素均交给 controller，
+ * 页面脚本本身不保存目录、标签或筛选状态。
+ */
 // 资源列表所有筛选状态由 controller 保存，避免在 DOM dataset 中保存业务状态。
 document.addEventListener('DOMContentLoaded', () => {
   const controller = createListController({

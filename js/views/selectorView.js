@@ -12,6 +12,7 @@ const COLUMN_DEFINITIONS = [
   ['URL', 'url'],
 ];
 
+/** 将字节数格式化为 KiB/MiB/GiB；缺失值返回空字符串供列自动隐藏。 */
 function formatBytes(bytes) {
   // API 可能未提供大小或返回非数字；此时保留空列值而不是显示 NaN。
   if (bytes === null || bytes === undefined || Number.isNaN(Number(bytes))) return '';
@@ -21,6 +22,7 @@ function formatBytes(bytes) {
   return `${Number((Number(bytes) / (1024 ** index)).toFixed(2))} ${units[index]}`;
 }
 
+/** 建立 data-selector-level 标记的层级容器。level 从 0 开始递增。 */
 function createLevel(container, level) {
   // 每一级各自占一个 section，使 clearFrom 能精确移除后续选择/表格而保留父级选择。
   const section = document.createElement('section');
@@ -36,6 +38,7 @@ function createLevel(container, level) {
  */
 export function createSelectorView(container, stopButton, matchedArchitecture) {
   function clearFrom(level) {
+    // 删除 level 及之后的 section；父级选择框必须保留，用户才能改选线路。
     container.querySelectorAll('[data-selector-level]').forEach((element) => {
       if (Number(element.dataset.selectorLevel) >= level) element.remove();
     });
@@ -51,6 +54,7 @@ export function createSelectorView(container, stopButton, matchedArchitecture) {
   }
 
   function renderSelect(items, level, onSelect) {
+    // items 是分组节点；每项通常含 name、default 及 children/nextUrl。
     clearFrom(level);
     const section = createLevel(container, level);
     const select = document.createElement('select');
@@ -76,6 +80,7 @@ export function createSelectorView(container, stopButton, matchedArchitecture) {
   }
 
   function renderDownloads(items, level, filter, onDownload) {
+    // items 是统一下载叶子；不会再读取 adapter 的 url、arch 等原始字段。
     clearFrom(level);
     const section = createLevel(container, level);
     // 下载地址必须为 http/https；非法项不产生可点击 DOM，避免配置错误变成安全问题。
@@ -183,6 +188,7 @@ export function createSelectorView(container, stopButton, matchedArchitecture) {
   }
 
   function renderError(level, error, onRetry) {
+    // 错误也占用一个层级，重试后 controller 会用同级新内容替换它。
     clearFrom(level);
     const section = createLevel(container, level);
     renderStatus(section, 'error', { message: error.message, onRetry });

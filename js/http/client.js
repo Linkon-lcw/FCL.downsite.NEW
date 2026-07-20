@@ -1,3 +1,11 @@
+/**
+ * 浏览器网络访问的唯一入口。
+ *
+ * options.signal：由页面/选择器传入，表示用户主动取消；
+ * options.timeoutMs：单次请求超时毫秒数，默认 15 秒；
+ * options.cache：是否复用本页生命周期内同 URL、同响应类型的 Promise。
+ */
+
 // 仅缓存本页生命周期内的“进行中/成功”请求；刷新页面后由浏览器 HTTP 缓存接管。
 // 键同时包含响应类型，避免同一 URL 被按 JSON 与文本两种方式解析时发生混用。
 const responseCache = new Map();
@@ -16,6 +24,12 @@ export class HttpError extends Error {
   }
 }
 
+/**
+ * 合并外部取消信号与内部超时信号。
+ * @param {AbortSignal|undefined} callerSignal controller 提供的用户取消信号
+ * @param {number} timeoutMs 超时毫秒数，传入非正数时不启用超时
+ * @returns {{signal: AbortSignal, didTimeOut: () => boolean, cleanup: () => void}}
+ */
 function createRequestSignal(callerSignal, timeoutMs) {
   // 不直接给 fetch 使用调用者 signal：这里额外合并了超时信号，任一方取消都会结束请求。
   const controller = new AbortController();
@@ -46,6 +60,13 @@ function createRequestSignal(callerSignal, timeoutMs) {
   };
 }
 
+/**
+ * 执行并解析一次请求。
+ * @param {string} url 绝对地址或本站根路径地址
+ * @param {'json'|'text'} responseType 成功响应的解析方式
+ * @param {{signal?: AbortSignal, timeoutMs?: number, cache?: boolean}} options 请求控制项
+ * @returns {Promise<unknown>} 已解析的响应；失败时抛出 HttpError
+ */
 async function request(url, responseType, options = {}) {
   const {
     signal,
@@ -104,14 +125,20 @@ async function request(url, responseType, options = {}) {
   return requestPromise;
 }
 
+/** 获取 JSON 数据，适用于本站目录、标签、镜像配置及外部镜像 API。 */
 export function getJSON(url, options) {
   return request(url, 'json', options);
 }
 
+/** 获取纯文本，适用于介绍 Markdown、HTML 和线路描述。 */
 export function getText(url, options) {
   return request(url, 'text', options);
 }
 
+/**
+ * 清理内存请求缓存。
+ * @param {string|undefined} url 指定资源；省略时清理当前页面的全部缓存
+ */
 export function clearResponseCache(url) {
   // url 为空时清空本页全部缓存；传入 URL 时只失效该资源的 JSON/文本两个变体。
   for (const key of responseCache.keys()) {

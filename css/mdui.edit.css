@@ -100,7 +100,6 @@
 .mdui-typo.mdui-typo a {
   color: unset;
   text-decoration: underline;
-  text-decoration-thickness: 2px;
 }
 
 .mdui-typo a::before,

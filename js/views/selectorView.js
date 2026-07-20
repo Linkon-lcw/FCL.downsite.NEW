@@ -165,7 +165,7 @@ export function createSelectorView(container, stopButton, matchedArchitecture) {
 
     if (matchedArchitecture && rows.some((row) => row.architecture === matchedArchitecture)) {
       const note = document.createElement('p');
-      note.className = 'description xf-success-note';
+      note.className = 'description';
       note.textContent = '已匹配当前架构，请留意绿色行（仅供参考，安装失败时请选择 all 架构）。';
       section.appendChild(note);
     }

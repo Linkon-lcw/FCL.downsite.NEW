@@ -3,7 +3,13 @@
  * 它只影响绿色推荐行，不会隐藏其他下载项；无法识别时用户仍可手动选择 all 架构。
  */
 
+// windows 系统不要根据平台来判断架构!!!
+// windows 系统不管是 64 位还是 32 位始终为 win32 平台
+// 再乱改我就炸了!!!
+//                                            晚梦
+
 // 顺序很重要：arm64/x86_64 必须先于更宽泛的 arm/x86 匹配。
+
 const ARCHITECTURES = [
   { pattern: /aarch64|arm64|armv8/i, name: 'arm64-v8a' },
   { pattern: /armeabi-v7a|armv7|\barm\b/i, name: 'armeabi-v7a' },

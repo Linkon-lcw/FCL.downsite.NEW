@@ -61,9 +61,8 @@
   display: none !important;
 }
 
-/* 绿色提示当前设备架构对应的下载行，同时复用给匹配说明。 */
-.xf-matched-arch,
-.xf-success-note {
+/* 绿色提示当前设备架构对应的下载行。 */
+.xf-matched-arch{
   background-color: #00ff0040;
 }
 

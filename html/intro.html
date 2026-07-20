@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-cn">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
+
+  <link rel="stylesheet" href="https://unpkg.com/mdui@1.0.2/dist/css/mdui.min.css">
+  <link rel="stylesheet" href="/css/mdui.edit.css">
+  <link rel="stylesheet" href="/css/xf.css">
+  <title>介绍文档</title>
+</head>
+
+<body class="mdui-appbar-with-toolbar mdui-container-fluid mdui-theme-layout-auto">
+  <div class="mdui-appbar mdui-appbar-fixed">
+    <div class="mdui-toolbar mdui-color-theme">
+      <a href="javascript: window.history.back();" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon material-icons">arrow_back</i></a>
+      <a href="/" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon material-icons">home</i></a>
+      <a href="list.html" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon material-icons">list</i></a>
+      <a href="detail.html" class="mdui-btn mdui-btn-icon mdui-ripple" id="detailBtn"><i class="mdui-icon material-icons">info</i></a>
+      <a href="" class="mdui-btn mdui-btn-icon mdui-ripple"><img src="" id="icon" class="mdui-img-fluid"></a>
+      <a href="" class="mdui-typo-title" id="title">介绍文档</a>
+      <div class="mdui-toolbar-spacer"></div>
+      <a href="javascript:void(0);" id="menu_btn" class="mdui-btn mdui-btn-icon mdui-ripple"><i class="mdui-icon material-icons">menu</i></a>
+    </div>
+  </div>
+
+  <div id="intro-content">
+    <div class="mdui-spinner"></div>
+  </div>
+
+  <script src="https://unpkg.com/mdui@1.0.2/dist/js/mdui.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@15.0.12/lib/marked.umd.min.js"></script>  <script type="module" src="/js/common/theme.js"></script>
+  <script type="module" src="/js/common/drawer.js"></script>
+  <script type="module" src="/js/intro.js"></script>
+</body>
+
+</html>

@@ -1,10 +1,10 @@
-import utils from '../module/utils.js';
-import { applyTheme } from '../module/theme.js';
+import { readPreference, writePreference } from '../domain/preferences.js';
+import { applyTheme } from '../domain/theme.js';
 
 document.addEventListener('DOMContentLoaded', function () {
-  const theme = utils.readLocalStorage('fdn-theme');
-  const primary = utils.readLocalStorage('fdn-theme-primary');
-  const accent = utils.readLocalStorage('fdn-theme-accent');
+  const theme = readPreference('fdn-theme');
+  const primary = readPreference('fdn-theme-primary');
+  const accent = readPreference('fdn-theme-accent');
 
   // 恢复单选框状态
   restoreRadioState('theme-select', 'theme-layout', theme || 'auto');
@@ -45,9 +45,8 @@ function bindRadioEvent(containerId, name, storageKey) {
   if (!container) return;
   container.addEventListener('change', function (e) {
     if (e.target.type === 'radio' && e.target.name === name) {
-      utils.writeLocalStorage(storageKey, e.target.value);
+      writePreference(storageKey, e.target.value);
       applyTheme();
     }
   });
 }
-

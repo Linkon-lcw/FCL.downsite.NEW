@@ -1,7 +1,11 @@
 [
   {
     "id": 0,
-    "basic": "/data/software/0/basic.json",
-    "detail": "/data/software/0/detail.json"
+    "name": "Fold Craft Launcher",
+    "icon": "/data/software/0/iocn.avif",
+    "tagIds": [
+      0
+    ],
+    "detailUrl": "/data/software/0/detail.json"
   }
 ]

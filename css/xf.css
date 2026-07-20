@@ -40,3 +40,33 @@
 .description {
   margin: 1rem 0;
 }
+
+.xf-status {
+  padding: 12px;
+  text-align: center;
+}
+
+.xf-status p {
+  margin: 8px 0;
+  overflow-wrap: anywhere;
+}
+
+.xf-status-error {
+  color: #d50000;
+}
+
+.xf-filter-hidden {
+  display: none !important;
+}
+
+.xf-matched-arch,
+.xf-success-note {
+  background-color: #00ff0040;
+}
+
+.xf-missing-media {
+  padding: 24px;
+  border: 1px dashed currentColor;
+  text-align: center;
+  opacity: .7;
+}

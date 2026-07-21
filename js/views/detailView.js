@@ -1,3 +1,4 @@
+import { getFeedbackChannels } from '../repositories/siteRepository.js';
 import { renderStatus, setErrorTitle, setSoftwareHeader } from './commonView.js';
 import { isSafeNavigationUrl } from '../security/content.js';
 
@@ -6,11 +7,27 @@ export function renderDetailLoading(elements) {
   renderTableStatus(elements.body, 'loading', '正在加载软件详情……');
 }
 
-/** 展示详情错误并隐藏依赖有效软件 ID 的操作按钮区。 */
+/** 展示详情错误并显示反馈按钮。 */
 export function renderDetailError(elements, error, onRetry) {
   setErrorTitle();
   renderTableStatus(elements.body, 'error', error.message, onRetry);
-  elements.operations.hidden = true;
+  elements.operations.replaceChildren();
+  getFeedbackChannels().then((channels) => {
+    if (channels.length > 0) {
+      const feedBtn = document.createElement('a');
+      feedBtn.href = channels[0].href;
+      feedBtn.target = '_blank';
+      feedBtn.rel = 'noopener noreferrer';
+      feedBtn.className = 'mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple';
+
+      const icon = document.createElement('i');
+      icon.className = 'mdui-icon material-icons';
+      icon.textContent = 'feedback';
+      feedBtn.append(icon, ` 通过 ${channels[0].name} 反馈问题`);
+
+      elements.operations.appendChild(feedBtn);
+    }
+  });
 }
 
 function renderTableStatus(body, state, message, onRetry) {

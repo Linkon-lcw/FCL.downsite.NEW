@@ -53,15 +53,13 @@
 }
 
 .xf-status-error {
-  color: #d50000;
+  color: #ff0000;
 }
 
-/* 下载表格的“推荐筛选”先隐藏未命中项，用户可点击按钮恢复显示。 */
 .xf-filter-hidden {
   display: none !important;
 }
 
-/* 绿色提示当前设备架构对应的下载行。 */
 .xf-matched-arch{
   background-color: #00ff0040;
 }

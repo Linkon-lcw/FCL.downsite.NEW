@@ -59,6 +59,8 @@ function makeAbsoluteUrl(value, baseUrl, allowDataImage = false) {
   // 远程内容内的相对地址必须以原文档地址为基准解析，不能以下载站当前页面为基准。
   if (!value || value.startsWith('#')) return value;
   try {
+    if (baseUrl.includes('raw.github') && value.startsWith('/')) value = value.replace(/^\//, './');
+    // 如果文档位于GH仓库，那么根目录不是只是GH域名。
     const resolved = new URL(value, baseUrl || window.location.href);
     if (resolved.protocol === 'http:' || resolved.protocol === 'https:') return resolved.href;
     if (allowDataImage && resolved.protocol === 'data:' && /^data:image\//i.test(value)) return value;

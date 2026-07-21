@@ -37,7 +37,7 @@ export function createIntroController(container, softwareId) {
       // 返回 DocumentFragment 而非 HTML 字符串，view 可以直接安全地替换正文节点。
       const fragment = await createSafeContent(rawContent, {
         type: item.type === 'md' ? 'md' : 'html',
-        baseUrl: url,
+        baseUrl: item.url,
       });
       renderDocument(body, fragment);
       states.set(body, 'ready');

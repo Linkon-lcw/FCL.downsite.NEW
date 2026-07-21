@@ -103,7 +103,7 @@ function rewriteUrls(root, baseUrl) {
   });
 
   root.querySelectorAll('img[src], source[src]').forEach((element) => {
-    const src = makeAbsoluteUrl(element.getAttribute('src'), baseUrl, true);
+    const src = makeAbsoluteUrl(element.getAttribute('src'), baseUrl);
     if (src) element.setAttribute('src', src);
     else element.removeAttribute('src');
     if (element.tagName === 'IMG') {
@@ -112,21 +112,11 @@ function rewriteUrls(root, baseUrl) {
   });
 }
 
-function makeAbsoluteUrl(value, baseUrl, allowDataImage = false) {
-  // 远程内容内的相对地址必须以原文档地址为基准解析，不能以下载站当前页面为基准。
-  if (!value || value.startsWith('#')) return value;
-  try {
-    if (baseUrl.includes('raw.github') && value.startsWith('/')) value = value.replace(/^\//, './'); // 如果文档位于GH仓库，那么根目录不是只是GH域名。
-    if (value.startsWith('http')) baseUrl = null; // 如果是绝对地址，那么基准地址无效。
-    const resolved = new URL(value, baseUrl || window.location.href || null);
-    console.log('resolved:', resolved);
-    if (resolved.protocol === 'http:' || resolved.protocol === 'https:') return resolved.href;
-    if (allowDataImage && resolved.protocol === 'data:' && /^data:image\//i.test(value)) return value;
-  } catch (e) {
-    // 无效 URL 会在下方被清除。
-    console.error('错误:', e);
-  }
-  return '';
+// 这里传进来的baseUrl一定得是detail.json['intro'][${index}]['url']！不能是带有当前文件的路径！
+function makeAbsoluteUrl(value, baseUrl) {
+  if (value.startsWith('http')) return value;
+  if (value.startsWith('./')) value = value.replace('./', '/');
+  return baseUrl + value;
 }
 
 /**

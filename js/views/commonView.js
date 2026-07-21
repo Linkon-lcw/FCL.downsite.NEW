@@ -20,6 +20,7 @@ export function renderStatus(container, state, { message = '', onRetry } = {}) {
     const spinner = document.createElement('div');
     spinner.className = 'mdui-spinner';
     wrapper.appendChild(spinner);
+    window.mdui?.mutation();
   }
 
   const text = document.createElement('p');

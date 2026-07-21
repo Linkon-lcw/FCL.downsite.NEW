@@ -52,7 +52,7 @@ async function loadFeedback(container) {
       // 配置数据也必须校验，禁止误填 javascript: 等危险协议。
       .filter((feedback) => isSafeNavigationUrl(feedback.href, { allowRelative: false }))
       .map((feedback) => {
-        const link = createNavigationLink(`通过${feedback.name}`, feedback.href, 'feedback');
+        const link = createNavigationLink(`通过 ${feedback.name}`, feedback.href, 'feedback');
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
         return link;

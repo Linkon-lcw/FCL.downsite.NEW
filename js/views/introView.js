@@ -27,11 +27,12 @@ export function renderIntroPanels(container, basic, items, onOpen) {
   }
 
   const fragment = document.createDocumentFragment();
+  
   // 这里只创建折叠外壳；正文请求由 header 点击后的 onOpen 回调延后触发。
-  items.forEach((item, index) => {
-    const panel = document.createElement('div');
-    panel.className = 'mdui-panel';
-    panel.setAttribute('mdui-panel', '');
+  const panel = document.createElement('div');
+  panel.className = 'mdui-panel';
+  panel.setAttribute('mdui-panel', '');
+items.forEach((item, index) => {
     const panelItem = document.createElement('div');
     panelItem.className = 'mdui-panel-item';
     const header = document.createElement('div');

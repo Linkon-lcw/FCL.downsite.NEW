@@ -52,55 +52,6 @@ export function loadExternalScript({ src, integrity, globalName }) {
 }
 
 /**
- * 将富文本内的链接转为可安全使用的绝对地址。
- * 仅允许 http/https；图片额外允许 data:image，禁止 javascript:、file: 等协议。
- */
-function makeAbsoluteUrl(value, baseUrl, allowDataImage = false) {
-  // 远程内容内的相对地址必须以原文档地址为基准解析，不能以下载站当前页面为基准。
-  if (!value || value.startsWith('#')) return value;
-  try {
-    if (baseUrl.includes('raw.github') && value.startsWith('/')) value = value.replace(/^\//, './');
-    // 如果文档位于GH仓库，那么根目录不是只是GH域名。
-    const resolved = new URL(value, baseUrl || window.location.href);
-    if (resolved.protocol === 'http:' || resolved.protocol === 'https:') return resolved.href;
-    if (allowDataImage && resolved.protocol === 'data:' && /^data:image\//i.test(value)) return value;
-  } catch (_) {
-    // 无效 URL 会在下方被清除。
-  }
-  return '';
-}
-
-function rewriteUrls(root, baseUrl) {
-  // DOMPurify 负责删除危险标签/属性；本函数再收紧协议并补齐相对地址，二者缺一不可。
-  root.querySelectorAll('[href]').forEach((element) => {
-    const href = makeAbsoluteUrl(element.getAttribute('href'), baseUrl);
-    if (href) element.setAttribute('href', href);
-    else element.removeAttribute('href');
-    // 只有跨域链接才新开窗口；页内锚点保持原行为，避免意外跳出当前文档。
-    if (element.tagName === 'A' && href && !href.startsWith('#')) {
-      try {
-        if (new URL(href, window.location.href).origin !== window.location.origin) {
-          element.target = '_blank';
-          element.rel = 'noopener noreferrer';
-        }
-      } catch (_) {
-        element.removeAttribute('href');
-      }
-    }
-  });
-
-  root.querySelectorAll('img[src], source[src]').forEach((element) => {
-    const src = makeAbsoluteUrl(element.getAttribute('src'), baseUrl, true);
-    if (src) element.setAttribute('src', src);
-    else element.removeAttribute('src');
-    if (element.tagName === 'IMG') {
-      element.loading = 'lazy';
-      element.decoding = 'async';
-    }
-  });
-}
-
-/**
  * 解析并净化远程正文。
  * @param {string} rawContent 原始 HTML 或 Markdown 文本
  * @param {{type?: 'html'|'md', baseUrl?: string}} options 内容类型与相对链接基准
@@ -126,6 +77,56 @@ export async function createSafeContent(rawContent, { type = 'html', baseUrl } =
   template.innerHTML = cleanHtml;
   rewriteUrls(template.content, baseUrl);
   return template.content;
+}
+
+/**
+ * 将富文本内的链接转为可安全使用的绝对地址。
+ * 仅允许 http/https；图片额外允许 data:image，禁止 javascript:、file: 等协议。
+ */
+function rewriteUrls(root, baseUrl) {
+  // DOMPurify 负责删除危险标签/属性；本函数再收紧协议并补齐相对地址，二者缺一不可。
+  root.querySelectorAll('[href]').forEach((element) => {
+    const href = makeAbsoluteUrl(element.getAttribute('href'), baseUrl);
+    if (href) element.setAttribute('href', href);
+    else element.removeAttribute('href');
+    // 只有跨域链接才新开窗口；页内锚点保持原行为，避免意外跳出当前文档。
+    if (element.tagName === 'A' && href && !href.startsWith('#')) {
+      try {
+        if (new URL(href, window.location.href).origin !== window.location.origin) {
+          element.target = '_blank';
+          element.rel = 'noopener noreferrer';
+        }
+      } catch (_) {
+        element.removeAttribute('href');
+      }
+    }
+  });
+
+  root.querySelectorAll('img[src], source[src]').forEach((element) => {
+    const src = makeAbsoluteUrl(element.getAttribute('src'), baseUrl, true);
+    if (src) element.setAttribute('src', src);
+    else element.removeAttribute('src');
+    if (element.tagName === 'IMG') {
+      element.loading = 'lazy';
+    }
+  });
+}
+
+function makeAbsoluteUrl(value, baseUrl, allowDataImage = false) {
+  // 远程内容内的相对地址必须以原文档地址为基准解析，不能以下载站当前页面为基准。
+  if (!value || value.startsWith('#')) return value;
+  try {
+    if (baseUrl.includes('raw.github') && value.startsWith('/')) value = value.replace(/^\//, './'); // 如果文档位于GH仓库，那么根目录不是只是GH域名。
+    if (value.startsWith('http')) baseUrl = null; // 如果是绝对地址，那么基准地址无效。
+    const resolved = new URL(value, baseUrl || window.location.href || null);
+    console.log('resolved:', resolved);
+    if (resolved.protocol === 'http:' || resolved.protocol === 'https:') return resolved.href;
+    if (allowDataImage && resolved.protocol === 'data:' && /^data:image\//i.test(value)) return value;
+  } catch (e) {
+    // 无效 URL 会在下方被清除。
+    console.error('错误:', e);
+  }
+  return '';
 }
 
 /**

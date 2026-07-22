@@ -125,3 +125,8 @@
 .mdui-typo li p:last-child {
   margin-bottom: 1.2em;
 }
+
+/* 花了一个小时也没有看懂为啥MDUI要在Drawer里强制不换行 */
+.mdui-drawer {
+  white-space: unset;
+}

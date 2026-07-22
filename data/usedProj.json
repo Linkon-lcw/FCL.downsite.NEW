@@ -1,0 +1,38 @@
+[
+  {
+    "name": "mdui",
+    "description": "基于 Material Design 的前端框架。",
+    "useDescription": "网站基本样式效果。",
+    "useVersion": "1.0.2",
+    "link": "https://github.com/zdhxiong/mdui",
+    "license": "MIT",
+    "licenseLink": "https://github.com/zdhxiong/mdui/blob/v1/LICENSE"
+  },
+  {
+    "name": "UAParser.js",
+    "description": "用户代理解析库。",
+    "useDescription": "下载页架构选择建议。",
+    "useVersion": "2.0.7",
+    "link": "https://github.com/faisalman/ua-parser-js",
+    "license": "AGPL-3.0",
+    "licenseLink": "https://github.com/faisalman/ua-parser-js/blob/master/LICENSE.md"
+  },
+  {
+    "name": "Marked",
+    "description": "Markdown 解析器。",
+    "useDescription": "文档、版本历史页解析Markdown信息。",
+    "useVersion": "15.0.12",
+    "link": "https://github.com/markedjs/marked",
+    "license": "MIT",
+    "licenseLink": "https://github.com/markedjs/marked/blob/master/LICENSE.md"
+  },
+  {
+    "name": "DOMPurify",
+    "description": "DOM 节点净化库。",
+    "useDescription": "文档、版本历史页净化Markdown内容。",
+    "useVersion": "3.2.6",
+    "link": "https://github.com/cure53/DOMPurify",
+    "license": "MPL-2.0",
+    "licenseLink": "https://github.com/cure53/DOMPurify/blob/main/LICENSE-MPL"
+  }
+]

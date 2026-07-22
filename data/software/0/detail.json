@@ -41,5 +41,6 @@
       "mirrorId": 10,
       "key": "/api/v1/FCL/"
     }
-  ]
+  ],
+  "randomSelectMirror": true
 }

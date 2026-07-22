@@ -8,11 +8,12 @@ import { isSafeNavigationUrl } from '../security/content.js';
  */
 
 /** 创建本站固定导航链接；label 是按钮文案，iconName 是 Material Icons 名称。 */
-function createNavigationLink(label, href, iconName) {
+function createNavigationLink(label, href, iconName, target) {
   // 所有抽屉链接通过 DOM API 创建，避免反馈渠道名称进入 HTML 字符串插值。
   const link = document.createElement('a');
   link.className = 'mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple';
   link.href = href;
+  if (target) link.target = target;
   const icon = document.createElement('i');
   icon.className = 'mdui-icon material-icons';
   icon.textContent = iconName;
@@ -85,6 +86,10 @@ function createDrawer() {
   ]));
   const feedbackContainer = document.createElement('div');
   panel.appendChild(createPanel('建议反馈', [feedbackContainer]));
+  panel.appendChild(createPanel('网站信息', [
+    createNavigationLink('2026 XIAOLUOFOXINGTON', '#', 'copyright'),
+    createNavigationLink('新ICP备2024015133号-7', 'https://beian.miit.gov.cn', 'beenhere', '_blank'),
+  ]));
   drawer.appendChild(panel);
   document.body.appendChild(drawer);
   document.body.classList.add('mdui-drawer-body-right');
@@ -109,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return drawerInstance;
   };
 
-  // 宽屏下 MDUI 抽屉持久可见，必须立即创建 DOM；窄屏仍保持懒加载。
+  // 宽屏下 MDUI 抽屉默认展开，必须立即创建 DOM；窄屏仍保持懒加载。
   if (isWideScreen()) ensureDrawer();
 
   button.addEventListener('click', () => {

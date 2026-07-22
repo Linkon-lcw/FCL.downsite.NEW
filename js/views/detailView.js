@@ -74,11 +74,7 @@ export function renderDetail(elements, id, basic, detail, tags) {
 
   elements.download.href = `/html/down.html?id=${id}`;
   elements.intro.href = `/html/intro.html?id=${id}`;
-  // rh.html 是预留入口，不能因为当前未实现就移除；原始历史 API 地址供未来页面读取。
   elements.history.href = `/html/rh.html?id=${id}`;
-  if (isSafeNavigationUrl(detail.releaseHistoryUrl, { allowRelative: false })) {
-    elements.history.dataset.releaseHistoryUrl = detail.releaseHistoryUrl;
-  }
 }
 
 /** 创建详情内的惰性图标节点；尺寸固定可减少表格首次渲染的布局变化。 */

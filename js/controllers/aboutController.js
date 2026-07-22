@@ -26,7 +26,7 @@ export function createAboutController(elements) {
       ]);
 
       renderDownloadLines(elements.downloadLines, mirrors, contributors);
-      renderContributors(elements.contributors, contributors);
+      renderContributors(elements.contributors, contributors, mirrors);
       renderUsedProjects(elements.usedProjects, usedProjects);
     } catch (error) {
       console.error('关于页面加载失败', error);

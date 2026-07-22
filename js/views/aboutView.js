@@ -53,8 +53,17 @@ export function renderDownloadLines(container, mirrors, contributors) {
  * @param {HTMLElement} container MDUI 面板容器
  * @param {Array} contributors 贡献者数据
  */
-export function renderContributors(container, contributors) {
+export function renderContributors(container, contributors, mirrors) {
   const fragment = document.createDocumentFragment();
+
+  // 构建 贡献者ID → 线路名列表 的映射
+  const contributorMirrors = new Map();
+  mirrors.forEach((m) => {
+    (m.contributeId || []).forEach((cid) => {
+      if (!contributorMirrors.has(cid)) contributorMirrors.set(cid, []);
+      contributorMirrors.get(cid).push(m.name);
+    });
+  });
 
   contributors.forEach((c) => {
     const panelItem = document.createElement('div');
@@ -134,15 +143,27 @@ export function renderContributors(container, contributors) {
     const rightCol = document.createElement('div');
     rightCol.className = 'mdui-typo mdui-col-xs-12 mdui-col-sm-8';
 
+    const ul = document.createElement('ul');
+
+    // content 字段按换行符拆分为多条贡献描述
     if (c.content) {
-      const ul = document.createElement('ul');
-      // content 字段按换行符拆分为多条贡献描述
       const lines = c.content.filter((line) => line.trim());
       lines.forEach((line) => {
         const li = document.createElement('li');
         li.textContent = line.trim();
         ul.appendChild(li);
       });
+    }
+
+    // 提及该贡献者提供的线路
+    const mirrorNames = contributorMirrors.get(c.id);
+    if (mirrorNames && mirrorNames.length > 0) {
+      const li = document.createElement('li');
+      li.textContent = '提供' + mirrorNames.join('、');
+      ul.appendChild(li);
+    }
+
+    if (ul.children.length > 0) {
       rightCol.appendChild(ul);
     }
 

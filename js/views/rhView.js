@@ -1,14 +1,5 @@
-import { renderStatus, setErrorTitle, setSoftwareHeader } from './commonView.js';
+import { formatBytes, renderStatus, setErrorTitle, setSoftwareHeader } from './commonView.js';
 import { createSafeContent } from '../security/content.js';
-
-/** 将字节数转为可读字符串。 */
-function formatBytes(bytes) {
-  if (typeof bytes !== 'number' || bytes < 0) return '未知';
-  if (bytes === 0) return '0 B';
-  const units = ['B', 'KiB', 'MiB', 'GiB', 'TiB'];
-  const i = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
-  return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + units[i];
-}
 
 /** 版本历史首屏加载状态。 */
 export function renderRhLoading(container) {
@@ -167,7 +158,7 @@ function createContentSection(body) {
   // 先显示加载状态，再异步渲染 Markdown
   const contentDiv = document.createElement('div');
   contentDiv.className = 'mdui-typo';
-  contentDiv.textContent = '加载正文……';
+  renderStatus(contentDiv, 'loading', { message: '正在渲染正文……' });
   bodyContainer.appendChild(contentDiv);
 
   panelItem.append(header, bodyContainer);
@@ -185,7 +176,10 @@ async function renderReleaseBody(container, body) {
     container.replaceChildren(fragment);
   } catch (error) {
     console.error('Release 正文渲染失败', error);
-    container.textContent = '正文渲染失败';
+    renderStatus(container, 'error', {
+      message: `正文渲染失败：${error.message}`,
+      onRetry: () => renderReleaseBody(container, body),
+    });
   }
 }
 

@@ -1,6 +1,6 @@
 import { inferArchitecture } from '../domain/systemInfo.js';
 import { isSafeNavigationUrl } from '../security/content.js';
-import { renderStatus } from './commonView.js';
+import { formatBytes, renderStatus } from './commonView.js';
 
 // 最终表格会删除所有行均为空的列，列名与下载项统一模型一一对应。
 const COLUMN_DEFINITIONS = [
@@ -11,16 +11,6 @@ const COLUMN_DEFINITIONS = [
   ['显示名称', 'name'],
   ['URL', 'url'],
 ];
-
-/** 将字节数格式化为 KiB/MiB/GiB；缺失值返回空字符串供列自动隐藏。 */
-function formatBytes(bytes) {
-  // API 可能未提供大小或返回非数字；此时保留空列值而不是显示 NaN。
-  if (bytes === null || bytes === undefined || Number.isNaN(Number(bytes))) return '';
-  if (Number(bytes) === 0) return '0 Bytes';
-  const units = ['Bytes', 'KiB', 'MiB', 'GiB', 'TiB'];
-  const index = Math.min(Math.floor(Math.log(Number(bytes)) / Math.log(1024)), units.length - 1);
-  return `${Number((Number(bytes) / (1024 ** index)).toFixed(2))} ${units[index]}`;
-}
 
 /** 建立 data-selector-level 标记的层级容器。level 从 0 开始递增。 */
 function createLevel(container, level) {
@@ -101,7 +91,7 @@ export function createSelectorView(container, stopButton, matchedArchitecture) {
         values: {
           architecture,
           description: item.description || '',
-          size: formatBytes(item.size),
+          size: item.size != null ? formatBytes(item.size) : '',
           name: item.name || '',
           url: item.downloadUrl,
         },

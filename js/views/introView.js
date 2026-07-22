@@ -27,12 +27,12 @@ export function renderIntroPanels(container, basic, items, onOpen) {
   }
 
   const fragment = document.createDocumentFragment();
-  
+
   // 这里只创建折叠外壳；正文请求由 header 点击后的 onOpen 回调延后触发。
   const panel = document.createElement('div');
   panel.className = 'mdui-panel';
   panel.setAttribute('mdui-panel', '');
-items.forEach((item, index) => {
+  items.forEach((item, index) => {
     const panelItem = document.createElement('div');
     panelItem.className = 'mdui-panel-item';
     const header = document.createElement('div');
@@ -50,8 +50,8 @@ items.forEach((item, index) => {
     panelItem.append(header, body);
     panel.appendChild(panelItem);
     header.addEventListener('click', () => onOpen(item, body));
-    fragment.appendChild(panel);
   });
+  fragment.appendChild(panel);
   container.replaceChildren(fragment);
   // 动态插入的面板需要通知 MDUI 重新扫描 data 属性。
   window.mdui?.mutation();

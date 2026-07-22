@@ -1,3 +1,12 @@
+/** 将字节数转为可读字符串。 */
+export function formatBytes(bytes) {
+  if (typeof bytes !== 'number' || bytes < 0) return '未知';
+  if (bytes === 0) return '0 B';
+  const units = ['B', 'KiB', 'MiB', 'GiB', 'TiB'];
+  const i = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
+  return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + units[i];
+}
+
 /** 清空可选容器；主要给没有复杂状态的 view 使用。 */
 export function clearElement(element) {
   element?.replaceChildren();

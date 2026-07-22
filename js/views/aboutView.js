@@ -27,21 +27,26 @@ export function renderDownloadLines(container, mirrors, contributors) {
 
   const fragment = document.createDocumentFragment();
   mirrors.forEach((mirror) => {
-    const providerNames = (mirror.contributeId || [])
-      .map((id) => {
-        const c = contributorMap.get(id);
-        return c ? (c.accentName || c.name) : `contributorID-${id}`;
-      })
-      .join('、');
-
     const tr = document.createElement('tr');
     const tdName = document.createElement('td');
     tdName.textContent = mirror.name;
     const tdProvider = document.createElement('td');
-    const tdProviderA = document.createElement('a');
-    tdProviderA.href = '#' + providerNames;
-    tdProviderA.textContent = providerNames || '未知';
-    tdProvider.appendChild(tdProviderA);
+
+    const ids = mirror.contributeId || [];
+    if (ids.length === 0) {
+      tdProvider.textContent = '未知';
+    } else {
+      ids.forEach((id, index) => {
+        if (index > 0) tdProvider.appendChild(document.createTextNode('、'));
+        const c = contributorMap.get(id);
+        const name = c ? (c.accentName || c.name) : `contributorID-${id}`;
+        const a = document.createElement('a');
+        a.href = '#' + name;
+        a.textContent = name;
+        tdProvider.appendChild(a);
+      });
+    }
+
     tr.append(tdName, tdProvider);
     fragment.appendChild(tr);
   });
@@ -145,7 +150,7 @@ export function renderContributors(container, contributors, mirrors) {
 
     const ul = document.createElement('ul');
 
-    // content 字段按换行符拆分为多条贡献描述
+    // content 字段按数组拆分为多条贡献描述
     if (c.content) {
       const lines = c.content.filter((line) => line.trim());
       lines.forEach((line) => {

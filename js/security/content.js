@@ -114,7 +114,8 @@ function rewriteUrls(root, baseUrl) {
 
 // 这里传进来的baseUrl一定得是detail.json['intro'][${index}]['url']！不能是带有当前文件的路径！
 function makeAbsoluteUrl(value, baseUrl) {
-  if (value.startsWith('http')) return value;
+  // data: 和 mailto: 等协议开头的值直接保留，不拼接 baseUrl。
+  if (/^(https?:|data:|mailto:|javascript:|#|\/\/)/i.test(value)) return value;
   if (value.startsWith('./')) value = value.replace('./', '/');
   return baseUrl + value;
 }

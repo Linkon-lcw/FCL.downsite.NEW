@@ -43,6 +43,10 @@
   padding: 0 12px;
 }
 
+.mdui-panel-item-title{
+  width: unset;
+}
+
 .mdui-select {
   font-size: unset;
   font-family: unset;

@@ -20,11 +20,17 @@
     "id": 9,
     "name": "线路10",
     "baseUrl": "https://miawa.cn",
-    "apiVer": "Lemwood"
+    "apiVer": "Lemwood",
+    "contributeId": [
+      2
+    ]
   },
   {
     "id": 10,
     "name": "线路11",
-    "baseUrl": "https://mirror.cxsjmc.cn"
+    "baseUrl": "https://mirror.cxsjmc.cn",
+    "contributeId": [
+      4
+    ]
   }
 ]

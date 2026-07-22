@@ -23,15 +23,32 @@
     ]
   },
   {
+    "id": 2,
+    "accentName": "柠枺"
+  },
+  {
     "id": 1,
-    "accentName": "枫源",
-    "name": "哈哈66623332",
-    "avatar": "https://frostlynx.work/images/haha.jpg",
+    "accentName": "haha252",
+    "name": "哈哈",
+    "avatar": "/media/img/contributeAvatar/haha252.jpg",
     "link": [
       {
-        "name": "website",
-        "href": "https://fengyuan.frostlynx.work/"
+        "name": "Github",
+        "href": "https://github.com/haha252"
+      },
+      {
+        "name": "Bilibili",
+        "href": "https://space.bilibili.com/451017007"
       }
     ]
+  },
+  {
+    "id": 3,
+    "accentName": "Linkong",
+    "avatar": "/media/img/contributeAvatar/Linkong.png"
+  },
+  {
+    "id": 4,
+    "accentName": "LANt"
   }
 ]

@@ -124,7 +124,14 @@ document.addEventListener('DOMContentLoaded', () => {
   if (isWideScreen()) ensureDrawer();
 
   button.addEventListener('click', () => {
-    ensureDrawer().toggle();
+    const wasCreated = !drawerInstance;
+    const instance = ensureDrawer();
+    if (wasCreated) {
+      // 首次创建时延迟一帧，确保浏览器已应用初始样式，否则动画不会触发
+      requestAnimationFrame(() => instance.toggle());
+    } else {
+      instance.toggle();
+    }
   });
 
   // 窄屏 → 宽屏切换时，若抽屉尚未创建则自动创建，避免宽屏下抽屉区域空白。

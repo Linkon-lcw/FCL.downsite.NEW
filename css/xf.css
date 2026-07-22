@@ -71,3 +71,8 @@
   text-align: center;
   opacity: .7;
 }
+
+.xf-new-announcement-badge {
+  color: #ff0;
+  margin-left: 8px;
+}

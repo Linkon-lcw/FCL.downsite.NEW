@@ -1,6 +1,7 @@
 import { getFeedbackChannels } from '../repositories/siteRepository.js';
 import { renderStatus } from '../views/commonView.js';
 import { isSafeNavigationUrl } from '../security/content.js';
+import { loadAnnouncement } from './announcement.js';
 
 /**
  * 所有页面共用的右侧抽屉。
@@ -75,6 +76,11 @@ function createDrawer() {
   const panel = document.createElement('div');
   panel.className = 'mdui-panel';
   panel.setAttribute('mdui-panel', '');
+
+  const announcementContainer = document.createElement('div');
+  announcementContainer.className = 'mdui-panel-item';
+  panel.appendChild(announcementContainer);
+  loadAnnouncement(announcementContainer);
 
   panel.appendChild(createPanel('网站导航', [
     createNavigationLink('资源列表', '/html/list.html', 'list'),

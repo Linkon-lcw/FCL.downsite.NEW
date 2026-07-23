@@ -22,10 +22,28 @@ function createNavigationLink(label, href, iconName, target) {
   return link;
 }
 
-/** 创建一个打开状态的 MDUI 面板项，content 为已创建好的 DOM 子节点数组。 */
-function createPanel(title, content) {
+/**
+ * 创建文本段落
+ * @param {Array} text 文本内容数组，用于分段
+ * @returns {HTMLElement} 文本段落片段
+ */
+function createTextArticle(text) {
+  const div = document.createElement('div');
+  div.className = 'mdui-typo';
+  text.forEach((line) => div.appendChild(createParagraph(line)));
+  return div;
+}
+
+function createParagraph(text) {
+  const p = document.createElement('p');
+  p.textContent = text;
+  return p;
+}
+
+/** 创建一个 MDUI 面板项，content 为已创建好的 DOM 子节点数组。 */
+function createPanel(title, content, isOpen = true) {
   const panelItem = document.createElement('div');
-  panelItem.className = 'mdui-panel-item mdui-panel-item-open';
+  panelItem.className = isOpen ? 'mdui-panel-item mdui-panel-item-open' : 'mdui-panel-item';
   const header = document.createElement('div');
   header.className = 'mdui-panel-item-header mdui-ripple';
   const label = document.createElement('div');
@@ -90,6 +108,13 @@ function createDrawer() {
   panel.appendChild(createPanel('网站设置', [
     createNavigationLink('主题设置', '/html/theme.html', 'style'),
   ]));
+  panel.appendChild(createPanel('回到旧版', [
+    createTextArticle(['旧版网站将不会有任何更新，不建议使用，仅作纪念。']),
+    createNavigationLink('NEXT版', 'https://next.foldcraftlauncher.cn', 'history', '_blank'),
+    createNavigationLink('mdui版', 'https://mdui.foldcraftlauncher.cn', 'history', '_blank'),
+    createNavigationLink('初版', 'https://old.foldcraftlauncher.cn', 'history', '_blank'),
+  ], false));
+
   const feedbackContainer = document.createElement('div');
   panel.appendChild(createPanel('建议反馈', [feedbackContainer]));
   panel.appendChild(createPanel('网站信息', [

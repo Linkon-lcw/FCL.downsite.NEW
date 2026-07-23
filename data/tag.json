@@ -1,6 +1,18 @@
 [
   {
     "id": 0,
-    "name": "MCJE-Launcher-On-Mobile"
+    "name": "MCJE-On-Mobile"
+  },
+  {
+    "id": 1,
+    "name": "启动器"
+  },
+  {
+    "id": 2,
+    "name": "插件"
+  },
+  {
+    "id": 3,
+    "name": "渲染器"
   }
 ]

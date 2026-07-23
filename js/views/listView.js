@@ -75,13 +75,12 @@ export function renderSoftwareList(container, software, tagMap) {
     const card = document.createElement('div');
     card.className = 'mdui-card mdui-ripple';
     const image = document.createElement('img');
-    image.src = item.icon;
+    image.src = item.icon || '/media/img/picMissing.webp';
     image.alt = item.name;
     image.width = 96;
     image.height = 96;
     // 列表扩大后，浏览器只在图片接近视口时下载/解码，宽高同时避免布局跳动。
     image.loading = 'lazy';
-    image.decoding = 'async';
     card.append(image, createText('mdui-card-primary-title', item.name));
     card.append(createText('mdui-card-primary-subtitle', `ID: ${item.id}`));
     const tagNames = item.tagIds.map((id) => tagMap.get(id) || String(id));

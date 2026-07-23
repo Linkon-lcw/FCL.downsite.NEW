@@ -107,7 +107,7 @@ export async function renderContributors(container, contributors, mirrors) {
     media.className = 'mdui-card-media';
 
     const img = document.createElement('img');
-    img.src = c.avatar || '/media/img/picMissing.jpg';
+    img.src = c.avatar || '/media/img/picMissing.webp';
     img.loading = 'lazy';
 
     const covered = document.createElement('div');

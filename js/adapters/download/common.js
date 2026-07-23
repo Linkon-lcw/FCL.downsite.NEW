@@ -27,7 +27,7 @@ export function normalizeDownloadItem(item, source, version = '') {
   // 各镜像字段名不同，只有这里允许读取其原始字段；后续 controller/view 只认识统一模型。
   const downloadUrl = item.downloadUrl || item.url || item.link || item.download_link || '';
   return {
-    name: item.name || item.file_name || item.arch || downloadUrl.split('/').pop() || '下载',
+    name: item.name || item.file_name || '',
     version,
     architecture: item.architecture || item.arch || '',
     size: item.size ?? item.size_bytes ?? null,

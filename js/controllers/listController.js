@@ -1,5 +1,5 @@
 import { getSoftwareCatalog, getTags } from '../repositories/siteRepository.js';
-import { renderFilterTags, renderListError, renderListLoading, renderSoftwareList } from '../views/listView.js';
+import { renderFilterTags, renderListError, renderListLoading, renderSoftwareList, setFilterIndicator } from '../views/listView.js';
 
 /**
  * 资源列表 controller。
@@ -38,6 +38,8 @@ export function createListController(elements) {
       if (searchTagRelation === 'not') return matchesSearch && !matchesTags;
       return matchesSearch && matchesTags;
     });
+    // 关系下拉框只决定组合方式，本身不算筛选条件；只有搜索词或选中标签存在时才亮起图标。
+    setFilterIndicator(elements.filterIndicator, searchActive || tagsActive);
     renderSoftwareList(elements.list, visible, tagMap);
   }
 

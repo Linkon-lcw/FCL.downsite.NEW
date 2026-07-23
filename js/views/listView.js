@@ -1,15 +1,22 @@
 import { renderStatus } from './commonView.js';
 
+/** 切换筛选面板标题中“已有筛选条件”图标的显示。 */
+export function setFilterIndicator(element, active) {
+  element?.classList.toggle('xf-hide', !active);
+}
+
 /** 同时显示目录与标签两个并行请求的加载状态。 */
 export function renderListLoading(elements) {
   renderStatus(elements.list, 'loading', { message: '正在加载软件目录……' });
   renderStatus(elements.tags, 'loading', { message: '正在加载标签……' });
+  setFilterIndicator(elements.filterIndicator, false);
 }
 
 /** 目录失败时清空标签区，防止保留上一次加载的筛选按钮。 */
 export function renderListError(elements, error, onRetry) {
   renderStatus(elements.list, 'error', { message: error.message, onRetry });
   elements.tags.replaceChildren();
+  setFilterIndicator(elements.filterIndicator, false);
 }
 
 /**

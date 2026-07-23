@@ -77,3 +77,14 @@
   color: #ff0;
   margin-left: 8px;
 }
+
+.xf-list-filter-panel-item {
+  position: sticky;
+  top: 64px;
+  z-index: 2000;
+}
+
+.xf-filter-active-indicator {
+  color: #ff0;
+  margin-left: 8px;
+}

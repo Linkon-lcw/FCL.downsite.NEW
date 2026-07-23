@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     search: document.querySelector('.mdui-textfield-input'),
     searchTagRelation: document.getElementById('relation-between-searchWord-and-tag'),
     tagTagRelation: document.getElementById('relation-between-tag-and-tag'),
+    filterIndicator: document.getElementById('filter-active-indicator'),
   });
   controller.load();
 });

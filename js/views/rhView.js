@@ -23,7 +23,6 @@ export async function renderReleases(container, basic, releases) {
     titlePrefix: '版本历史 - ',
     detailButton: document.getElementById('detailBtn'),
   });
-  document.title = '版本历史 - ' + basic.name;
 
   if (!releases.length) {
     renderStatus(container, 'empty', { message: '暂无版本记录' });

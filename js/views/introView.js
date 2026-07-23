@@ -18,7 +18,7 @@ export function renderIntroError(container, error, onRetry) {
  */
 export function renderIntroPanels(container, basic, items, onOpen) {
   setSoftwareHeader(basic, {
-    titlePrefix: '介绍',
+    titlePrefix: '文档 - ',
     detailButton: document.getElementById('detailBtn'),
   });
   if (!items.length) {

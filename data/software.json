@@ -33,5 +33,11 @@
     "icon": "/data/software/4/icon.avif",
     "tagIds": [0, 1],
     "detailUrl": "/data/software/4/detail.json"
+  },
+  {
+    "id": 5,
+    "name": "Krypton Wrapper",
+    "tagIds": [0, 2, 3],
+    "detailUrl": "/data/software/5/detail.json"
   }
 ]

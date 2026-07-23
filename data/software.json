@@ -19,5 +19,12 @@
     "icon": "/data/software/2/icon.avif",
     "tagIds": [0, 1],
     "detailUrl": "/data/software/2/detail.json"
+  },
+  {
+    "id": 3,
+    "name": "Zalith Launcher 2",
+    "icon": "/data/software/3/icon.avif",
+    "tagIds": [0, 1],
+    "detailUrl": "/data/software/3/detail.json"
   }
 ]

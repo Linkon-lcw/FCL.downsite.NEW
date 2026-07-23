@@ -5,5 +5,12 @@
     "icon": "/data/software/0/icon.avif",
     "tagIds": [0, 1],
     "detailUrl": "/data/software/0/detail.json"
+  },
+  {
+    "id": 1,
+    "name": "MobileGlues",
+    "icon": "/data/software/1/icon.avif",
+    "tagIds": [0, 2, 3],
+    "detailUrl": "/data/software/1/detail.json"
   }
 ]

@@ -1,5 +1,4 @@
 import { normalizeDownloadItem } from './common.js';
-import { getBaseUrl } from '../../repositories/downloadRepository.js';
 
 /**
  * Linkong API 适配器。
@@ -8,7 +7,6 @@ import { getBaseUrl } from '../../repositories/downloadRepository.js';
  * @param {{source: string}} context 线路显示名
  */
 export async function adaptLinkong(payload, context) {
-  const baseUrl = await getBaseUrl(context.mirrorId);
   const releases = payload?.releases || [];
   return releases.map((release, index) => ({
     name: release.version || release.title || `版本 ${index + 1}`,
@@ -17,7 +15,7 @@ export async function adaptLinkong(payload, context) {
       normalizeDownloadItem(
         {
           ...asset,
-          downloadUrl: wdfDownUrl(baseUrl, release.version, asset.name, payload.owner, payload.repo),
+          downloadUrl: wdfDownUrl(context.baseUrl, release.version, asset.name, payload.owner, payload.repo),
         },
         context.source,
         release.version,

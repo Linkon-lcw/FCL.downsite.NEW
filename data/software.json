@@ -26,5 +26,12 @@
     "icon": "/data/software/3/icon.avif",
     "tagIds": [0, 1],
     "detailUrl": "/data/software/3/detail.json"
+  },
+  {
+    "id": 4,
+    "name": "Amethyst-Android",
+    "icon": "/data/software/4/icon.avif",
+    "tagIds": [0, 1],
+    "detailUrl": "/data/software/4/detail.json"
   }
 ]

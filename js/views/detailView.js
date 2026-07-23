@@ -83,7 +83,7 @@ export function renderDetail(elements, id, basic, detail, tags) {
 /** 创建详情内的惰性图标节点；尺寸固定可减少表格首次渲染的布局变化。 */
 function createIcon(basic) {
   const image = document.createElement('img');
-  image.src = basic.icon;
+  image.src = basic.icon || '/media/img/picMissing.webp';
   image.alt = basic.name;
   image.className = 'xf-detail-icon';
   image.width = 64;

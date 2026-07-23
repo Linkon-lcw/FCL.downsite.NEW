@@ -64,7 +64,7 @@ export function setSoftwareHeader(basic, { titlePrefix = '', detailButton } = {}
   const title = document.getElementById('title');
   const pageTitle = `${titlePrefix}${basic.name}`;
   if (icon) {
-    icon.src = basic.icon;
+    icon.src = basic.icon || '/media/img/picMissing.webp';
     icon.alt = basic.name;
   }
   if (title) title.textContent = pageTitle;

@@ -33,7 +33,7 @@ export async function getSoftwareCatalog(options = {}) {
     '软件目录',
   );
   items.forEach((item) => {
-    if (!item.name || !item.icon || !item.detailUrl || !Array.isArray(item.tagIds)) {
+    if (!item.name || !item.detailUrl || !Array.isArray(item.tagIds)) {
       throw new Error(`软件 ${item.id} 的基础信息不完整`);
     }
   });

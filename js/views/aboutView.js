@@ -1,4 +1,5 @@
 import { renderStatus } from './commonView.js';
+import { createSafeContent } from '../security/content.js';
 
 /**
  * 关于页面 view。
@@ -21,7 +22,7 @@ export function renderAboutError(container, error, onRetry) {
  * @param {Array} mirrors 线路数据，来自 mirror.json
  * @param {Array} contributors 贡献者数据，来自 contribute.json
  */
-export function renderDownloadLines(container, mirrors, contributors) {
+export async function renderDownloadLines(container, mirrors, contributors) {
   const contributorMap = new Map();
   contributors.forEach((c) => contributorMap.set(c.id, c));
 
@@ -50,7 +51,7 @@ export function renderDownloadLines(container, mirrors, contributors) {
     tr.append(tdName, tdProvider);
     fragment.appendChild(tr);
   });
-  container.replaceChildren(fragment);
+  container.replaceChildren(await createSafeContent(fragment));
 }
 
 /**
@@ -58,7 +59,7 @@ export function renderDownloadLines(container, mirrors, contributors) {
  * @param {HTMLElement} container MDUI 面板容器
  * @param {Array} contributors 贡献者数据
  */
-export function renderContributors(container, contributors, mirrors) {
+export async function renderContributors(container, contributors, mirrors) {
   const fragment = document.createDocumentFragment();
 
   // 构建 贡献者ID → 线路名列表 的映射
@@ -178,7 +179,7 @@ export function renderContributors(container, contributors, mirrors) {
     fragment.appendChild(panelItem);
   });
 
-  container.replaceChildren(fragment);
+  container.replaceChildren(await createSafeContent(fragment));
   window.mdui?.mutation();
 }
 
@@ -187,7 +188,7 @@ export function renderContributors(container, contributors, mirrors) {
  * @param {HTMLElement} container tbody 容器
  * @param {Array} projects 开源项目数据，来自 usedProj.json
  */
-export function renderUsedProjects(container, projects) {
+export async function renderUsedProjects(container, projects) {
   const fragment = document.createDocumentFragment();
 
   projects.forEach((p) => {
@@ -229,5 +230,5 @@ export function renderUsedProjects(container, projects) {
     fragment.appendChild(tr);
   });
 
-  container.replaceChildren(fragment);
+  container.replaceChildren(await createSafeContent(fragment));
 }

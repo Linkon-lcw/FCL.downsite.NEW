@@ -15,6 +15,7 @@ const ARCHITECTURES = [
   { pattern: /armeabi-v7a|armv7|\barm\b/i, name: 'armeabi-v7a' },
   { pattern: /x86_64|x64|amd64/i, name: 'x86_64' },
   { pattern: /\bx86\b|i[36]86/i, name: 'x86' },
+  { pattern : /all/i, name : 'all' },
 ];
 
 /**

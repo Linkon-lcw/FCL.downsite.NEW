@@ -17,6 +17,15 @@
     ]
   },
   {
+    "id": 4,
+    "name": "线路5",
+    "baseUrl": "https://fcl.switch.api.072211.xyz",
+    "apiVer": "Linkong",
+    "contributeId": [
+      3
+    ]
+  },
+  {
     "id": 9,
     "name": "线路10",
     "baseUrl": "https://miawa.cn",

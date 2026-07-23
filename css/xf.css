@@ -21,7 +21,7 @@
 }
 
 .xf-list-item img {
-  object-fit: contain;
+  object-fit: cover;
   height: 96px;
   width: 96px;
   float: left;

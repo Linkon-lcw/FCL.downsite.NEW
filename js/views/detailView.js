@@ -75,6 +75,9 @@ export function renderDetail(elements, id, basic, detail, tags) {
   elements.download.href = `/html/down.html?id=${id}`;
   elements.intro.href = `/html/intro.html?id=${id}`;
   elements.history.href = `/html/rh.html?id=${id}`;
+  elements.download.removeAttribute('disabled'); // 注意：a元素原生不支持disabled属性
+  elements.intro.removeAttribute('disabled');
+  elements.history.removeAttribute('disabled');
 }
 
 /** 创建详情内的惰性图标节点；尺寸固定可减少表格首次渲染的布局变化。 */
@@ -86,7 +89,6 @@ function createIcon(basic) {
   image.width = 64;
   image.height = 64;
   image.loading = 'lazy';
-  image.decoding = 'async';
   return image;
 }
 

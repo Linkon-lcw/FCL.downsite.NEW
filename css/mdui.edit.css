@@ -1,3 +1,26 @@
+@media (min-width:1024px) {
+  .mdui-drawer-body-left {
+    padding-left: 320px
+  }
+
+  .mdui-drawer-body-right {
+    padding-right: 320px
+  }
+
+  .mdui-drawer {
+    width: 320px;
+  }
+
+  .mdui-drawer-close {
+    -webkit-transform:translateX(-330px);
+    transform:translateX(-330px)
+  }
+  .mdui-drawer-close.mdui-drawer-right {
+    -webkit-transform:translateX(330px);
+    transform:translateX(330px)
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   body:not(.mdui-theme-layout-light) .mdui-btn-raised {
     -webkit-box-shadow: 0 2px 4px #000;

@@ -6,7 +6,7 @@ import { normalizeDownloadItem } from './common.js';
  * @param {object} payload Linkong API 响应
  * @param {{source: string}} context 线路显示名
  */
-export async function adaptLinkong(payload, context) {
+export function adaptLinkong(payload, context) {
   const releases = payload?.releases || [];
   return releases.map((release, index) => ({
     name: release.version || release.title || `版本 ${index + 1}`,

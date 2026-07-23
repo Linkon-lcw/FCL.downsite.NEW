@@ -56,7 +56,7 @@ export function createDownloadController(elements, softwareId) {
         stopButton: elements.stopButton,
         matchedArchitecture: system.matchedArchitecture,
         softwareName: basic.name,
-        dataSource: [{ name: basic.name, nameIsSoftware: true, children: mirrorItems, random: detail.randomSelectMirror }],
+        dataSource: [{ name: basic.name, nameIsSoftware: true, children: mirrorItems, random: detail.randomSelectMirror, filter: detail.filter }],
       });
       selectorController.start();
     } catch (error) {

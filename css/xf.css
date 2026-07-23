@@ -28,6 +28,12 @@
   padding: 0 8px 0 0;
 }
 
+.xf-list-item .mdui-card-primary-subtitle {
+  line-height: 18px;
+  text-indent: -2.4em;
+  padding-left: 10em;
+}
+
 .xf-detail-icon {
   max-height: 64px;
   max-width: 64px;

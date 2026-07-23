@@ -3,9 +3,7 @@
     "id": 0,
     "name": "Fold Craft Launcher",
     "icon": "/data/software/0/icon.avif",
-    "tagIds": [
-      0
-    ],
+    "tagIds": [0, 1],
     "detailUrl": "/data/software/0/detail.json"
   }
 ]

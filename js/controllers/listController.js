@@ -4,7 +4,8 @@ import { renderFilterTags, renderListError, renderListLoading, renderSoftwareLis
 /**
  * 资源列表 controller。
  * elements.tags：标签按钮挂载点；elements.list：软件卡片挂载点；
- * elements.search：搜索输入框。它们均来自 list.html 的固定 ID/类名。
+ * elements.search：搜索输入框；elements.searchTagRelation：搜索词与标签的关系（与/或/非）；
+ * elements.tagTagRelation：标签之间的关系（与/或）。它们均来自 list.html 的固定 ID/类名。
  */
 export function createListController(elements) {
   // 筛选状态保存在 controller，view 每次只接收已经过滤好的纯数据。
@@ -14,16 +15,28 @@ export function createListController(elements) {
   let searchText = '';
 
   function applyFilters() {
-    // 标签是"必须同时包含所有选中"，搜索同时匹配名称和数字 ID。
+    // 搜索同时匹配名称和数字 ID；标签按 tagTagRelation 决定与/或，
+    // 搜索词与标签按 searchTagRelation 决定与/或/非。仅一侧生效时关系不参与组合。
     const normalizedSearch = searchText.trim().toLocaleLowerCase();
+    const searchActive = !!normalizedSearch;
+    const tagsActive = !!activeTagIds.size;
+    const tagTagRelation = elements.tagTagRelation?.value || 'and';
+    const searchTagRelation = elements.searchTagRelation?.value || 'and';
+
     const visible = catalog.filter((item) => {
       // tagIds 在目录中是数字，按钮 dataset 始终是字符串，所以比较前统一转字符串。
-      const matchesTags = !activeTagIds.size
-        || [...activeTagIds].every((selectedId) => item.tagIds.some((tagId) => String(tagId) === selectedId));
-      const matchesSearch = !normalizedSearch
+      const matchesSearch = !searchActive
         || item.name.toLocaleLowerCase().includes(normalizedSearch)
         || String(item.id).includes(normalizedSearch);
-      return matchesTags && matchesSearch;
+      const matchesTags = !tagsActive
+        || (tagTagRelation === 'or'
+          ? [...activeTagIds].some((selectedId) => item.tagIds.some((tagId) => String(tagId) === selectedId))
+          : [...activeTagIds].every((selectedId) => item.tagIds.some((tagId) => String(tagId) === selectedId)));
+      // 仅一侧筛选生效时直接取该侧结果；两侧同时生效时按 searchTagRelation 组合。
+      if (!searchActive || !tagsActive) return matchesSearch && matchesTags;
+      if (searchTagRelation === 'or') return matchesSearch || matchesTags;
+      if (searchTagRelation === 'not') return matchesSearch && !matchesTags;
+      return matchesSearch && matchesTags;
     });
     renderSoftwareList(elements.list, visible, tagMap);
   }
@@ -54,5 +67,7 @@ export function createListController(elements) {
     searchText = elements.search.value;
     applyFilters();
   });
+  elements.searchTagRelation?.addEventListener('change', applyFilters);
+  elements.tagTagRelation?.addEventListener('change', applyFilters);
   return { load };
 }

@@ -3,7 +3,7 @@ import { adaptFengyuan } from './fengyuan.js';
 import { adaptFrostlynx } from './frostlynx.js';
 import { adaptLemwood } from './lemwood.js';
 import { adaptPlain } from './plain.js';
-import { adaptLinkong } from './linkong.js';
+import { adaptLinkong } from './Linkong.js';
 import { adaptWay2old } from './way2old.js';
 export { randomlySelectDefault } from './common.js';
 

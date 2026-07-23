@@ -39,5 +39,11 @@
     "name": "Krypton Wrapper",
     "tagIds": [0, 2, 3],
     "detailUrl": "/data/software/5/detail.json"
+  },
+  {
+    "id": 6,
+    "name": "FCL Driver Plugin",
+    "tagIds": [0, 2, 4],
+    "detailUrl": "/data/software/6/detail.json"
   }
 ]

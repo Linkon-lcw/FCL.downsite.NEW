@@ -63,22 +63,32 @@ function createTagButton(label, tagId, selected = false) {
   return button;
 }
 
+/** 打开方式值到页面路径的映射。 */
+const OPEN_METHOD_PAGE_MAP = {
+  detail: '/html/detail.html',
+  download: '/html/down.html',
+  doc: '/html/intro.html',
+  history: '/html/rh.html',
+};
+
 /**
  * 将 controller 已筛选好的软件目录渲染为卡片。
  * tagMap 的键为数值 tag ID，值为标签名；没有标签时保留原 ID 便于发现配置问题。
+ * openMethod 控制卡片点击后的默认跳转页面，来自用户行为设置偏好。
  */
-export function renderSoftwareList(container, software, tagMap) {
+export function renderSoftwareList(container, software, tagMap, openMethod = 'detail') {
   if (!software.length) {
     renderStatus(container, 'empty', { message: '没有符合条件的软件' });
     return;
   }
+  const pagePath = OPEN_METHOD_PAGE_MAP[openMethod] || OPEN_METHOD_PAGE_MAP.detail;
   const fragment = document.createDocumentFragment();
   software.forEach((item) => {
     const wrapper = document.createElement('div');
     wrapper.className = 'xf-list-item';
 
     const link = document.createElement('a');
-    link.href = `/html/detail.html?id=${item.id}`;
+    link.href = `${pagePath}?id=${item.id}`;
     const card = document.createElement('div');
     card.className = 'mdui-card mdui-ripple';
     const image = document.createElement('img');

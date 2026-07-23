@@ -106,6 +106,7 @@ function createDrawer() {
     createNavigationLink('关于网站', '/html/about.html', 'people'),
   ]));
   panel.appendChild(createPanel('网站设置', [
+    createNavigationLink('行为设置', '/html/behavior.html', 'settings'),
     createNavigationLink('主题设置', '/html/theme.html', 'style'),
   ]));
   panel.appendChild(createPanel('回到旧版', [

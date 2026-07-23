@@ -298,6 +298,7 @@ function createSummaryPanel(assets) {
   const tbody = document.createElement('tbody');
   addTableRow(tbody, '总大小', formatBytes(totalSize));
   addTableRow(tbody, '所有下载URL', allUrls.join('\n'));
+  // TODO: 实际上在文档中这里并没有正确换行。
   table.appendChild(tbody);
 
   fluid.appendChild(table);

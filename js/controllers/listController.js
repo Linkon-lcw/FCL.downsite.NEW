@@ -1,3 +1,4 @@
+import { readPreference } from '../domain/preferences.js';
 import { getSoftwareCatalog, getTags } from '../repositories/siteRepository.js';
 import { renderFilterTags, renderListError, renderListLoading, renderSoftwareList, setFilterIndicator } from '../views/listView.js';
 
@@ -13,6 +14,8 @@ export function createListController(elements) {
   let tagMap = new Map();
   let activeTagIds = new Set();
   let searchText = '';
+  // 读取用户设置的默认打开方式，未设置时默认为详情页。
+  let openMethod = readPreference('fdn-default-open-method') || 'detail';
 
   function applyFilters() {
     // 搜索同时匹配名称和数字 ID；标签按 tagTagRelation 决定与/或，
@@ -40,7 +43,7 @@ export function createListController(elements) {
     });
     // 关系下拉框只决定组合方式，本身不算筛选条件；只有搜索词或选中标签存在时才亮起图标。
     setFilterIndicator(elements.filterIndicator, searchActive || tagsActive);
-    renderSoftwareList(elements.list, visible, tagMap);
+    renderSoftwareList(elements.list, visible, tagMap, openMethod);
   }
 
   async function load() {

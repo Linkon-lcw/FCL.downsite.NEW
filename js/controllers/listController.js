@@ -14,12 +14,12 @@ export function createListController(elements) {
   let searchText = '';
 
   function applyFilters() {
-    // 标签是“命中任意一个即可”，搜索同时匹配名称和数字 ID。
+    // 标签是"必须同时包含所有选中"，搜索同时匹配名称和数字 ID。
     const normalizedSearch = searchText.trim().toLocaleLowerCase();
     const visible = catalog.filter((item) => {
       // tagIds 在目录中是数字，按钮 dataset 始终是字符串，所以比较前统一转字符串。
       const matchesTags = !activeTagIds.size
-        || item.tagIds.some((id) => activeTagIds.has(String(id)));
+        || [...activeTagIds].every((selectedId) => item.tagIds.some((tagId) => String(tagId) === selectedId));
       const matchesSearch = !normalizedSearch
         || item.name.toLocaleLowerCase().includes(normalizedSearch)
         || String(item.id).includes(normalizedSearch);

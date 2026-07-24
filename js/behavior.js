@@ -2,15 +2,12 @@ import { createBehaviorController } from './controllers/behaviorController.js';
 
 /**
  * 行为设置页面入口。
- * 加载已保存的默认打开方式偏好并绑定下拉选择器变更事件。
+ * controller 从 setting.json 加载配置树并驱动 view 动态渲染。
  */
 document.addEventListener('DOMContentLoaded', () => {
-  const selectEl = document.getElementById('defaultOpenMethod');
-  if (!selectEl) return;
+  const container = document.getElementById('settings-content');
+  if (!container) return;
 
-  const controller = createBehaviorController({
-    select: selectEl,
-    container: selectEl.closest('.mdui-panel-item-body'),
-  });
+  const controller = createBehaviorController({ container });
   controller.load();
 });

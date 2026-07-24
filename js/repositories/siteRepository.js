@@ -61,6 +61,13 @@ export async function getFeedbackChannels(options = {}) {
   return assertArray(await getJSON('/data/feedback.json', { ...options, cache: true }), '反馈渠道');
 }
 
+/** 获取设置配置树，顶层为数组，每项为设置分类节点。 */
+export async function getSettings(options = {}) {
+  const data = await getJSON('/data/setting.json', { ...options, cache: true });
+  if (!Array.isArray(data)) throw new Error('设置数据格式不正确：应为数组');
+  return data;
+}
+
 /**
  * 获取某软件的“目录基础信息 + 独立详情 JSON”。
  * @param {number} id 软件 ID，来自 URL 查询参数

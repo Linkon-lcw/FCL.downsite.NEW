@@ -30,6 +30,11 @@
   "releaseHistoryUrl": "https://api.github.com/repos/FCL-Team/FoldCraftLauncher/releases",
   "download": [
     {
+      "mirrorId": 0,
+      "key": "/0/index.json",
+      "notJoinRandom": true
+    },
+    {
       "mirrorId": 1,
       "key": "/api/public/v1/projects/FoldCraftLauncher/assets"
     },

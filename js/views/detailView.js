@@ -2,32 +2,52 @@ import { getFeedbackChannels } from '../repositories/siteRepository.js';
 import { renderStatus, setErrorTitle, setSoftwareHeader } from './commonView.js';
 import { isSafeNavigationUrl } from '../security/content.js';
 
+let errorToken = 0;
+
 /** 将详情表格置为加载状态，仍遵守 tbody 只能包含 tr 的 HTML 结构。 */
 export function renderDetailLoading(elements) {
   renderTableStatus(elements.body, 'loading', '正在加载软件详情……');
 }
 
-/** 展示详情错误并显示反馈按钮。 */
+/** 展示详情错误并显示反馈按钮（或反馈渠道加载状态）。 */
 export function renderDetailError(elements, error, onRetry) {
+  const token = ++errorToken;
   setErrorTitle();
   renderTableStatus(elements.body, 'error', error.message, onRetry);
+
+  // 清空操作区，先显示加载状态
   elements.operations.replaceChildren();
-  getFeedbackChannels().then((channels) => {
-    if (channels.length > 0) {
-      const feedBtn = document.createElement('a');
-      feedBtn.href = channels[0].href;
-      feedBtn.target = '_blank';
-      feedBtn.rel = 'noopener noreferrer';
-      feedBtn.className = 'mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple';
+  renderStatus(elements.operations, 'loading', { message: '加载反馈渠道...' });
 
-      const icon = document.createElement('i');
-      icon.className = 'mdui-icon material-icons';
-      icon.textContent = 'feedback';
-      feedBtn.append(icon, ` 通过 ${channels[0].name} 反馈问题`);
+  // 异步获取反馈渠道
+  getFeedbackChannels()
+    .then((channels) => {
+      if (token !== errorToken) return; // 已被新状态覆盖
+      // 清除加载状态
+      elements.operations.replaceChildren();
+      if (channels.length > 0) {
+        // 正常显示反馈按钮
+        const feedBtn = document.createElement('a');
+        feedBtn.href = channels[0].href;
+        feedBtn.target = '_blank';
+        feedBtn.rel = 'noopener noreferrer';
+        feedBtn.className = 'mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple';
 
-      elements.operations.appendChild(feedBtn);
-    }
-  });
+        const icon = document.createElement('i');
+        icon.className = 'mdui-icon material-icons';
+        icon.textContent = 'feedback';
+        feedBtn.append(icon, ` 通过 ${channels[0].name} 反馈问题`);
+        elements.operations.appendChild(feedBtn);
+      } else {
+        // 无反馈渠道，显示错误状态并提供重试
+        renderStatus(elements.operations, 'error', { message: '暂无反馈渠道', onRetry });
+      }
+    })
+    .catch((err) => {
+      if (token !== errorToken) return;
+      // 获取渠道失败，显示错误状态并提供重试
+      renderStatus(elements.operations, 'error', { message: `反馈渠道加载失败: ${err.message}`, onRetry });
+    });
 }
 
 function renderTableStatus(body, state, message, onRetry) {
@@ -47,6 +67,11 @@ function renderTableStatus(body, state, message, onRetry) {
  * tags 用于将 basic.tagIds 从数字翻译为人可读名称。
  */
 export function renderDetail(elements, id, basic, detail, tags) {
+  errorToken++;
+  // 重置操作按钮区域，移除所有子元素（包括错误时添加的反馈按钮），重新添加三个操作按钮
+  const container = elements.operations;
+  container.replaceChildren(elements.download, elements.intro, elements.history);
+
   setSoftwareHeader(basic);
   elements.operations.hidden = false;
   const tagMap = new Map(tags.map((tag) => [tag.id, tag.name]));
@@ -75,7 +100,7 @@ export function renderDetail(elements, id, basic, detail, tags) {
   elements.download.href = `/html/down.html?id=${id}`;
   elements.intro.href = `/html/intro.html?id=${id}`;
   elements.history.href = `/html/rh.html?id=${id}`;
-  elements.download.removeAttribute('disabled'); // 注意：a元素原生不支持disabled属性
+  elements.download.removeAttribute('disabled');
   elements.intro.removeAttribute('disabled');
   elements.history.removeAttribute('disabled');
 }

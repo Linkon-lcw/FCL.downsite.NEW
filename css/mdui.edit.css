@@ -62,6 +62,10 @@
   right: 12px;
 }
 
+.mdui-panel-item-open>.mdui-panel-item-body{
+  overflow: unset;
+}
+
 .mdui-panel-item-body {
   padding: 0 12px;
 }

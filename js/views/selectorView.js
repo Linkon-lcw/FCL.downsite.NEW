@@ -50,6 +50,7 @@ export function createSelectorView(container, stopButton, matchedArchitecture) {
     const section = createLevel(container, level);
     const select = document.createElement('select');
     select.className = 'mdui-select mdui-block';
+    select.setAttribute('mdui-select', '');
     select.setAttribute('aria-label', `下载选项第 ${level + 1} 级`);
     items.forEach((item, index) => {
       const option = document.createElement('option');
@@ -62,10 +63,11 @@ export function createSelectorView(container, stopButton, matchedArchitecture) {
     section.append(select, description);
     // select 的 value 存数组索引，避免依赖可能重复的线路名称。
     select.addEventListener('change', () => onSelect(items[Number(select.value)], description));
-    window.mdui?.mutation();
 
     const defaultIndex = items.findIndex((item) => item.default === true);
     select.value = String(defaultIndex >= 0 ? defaultIndex : 0);
+    // MDUI 初始化必须要在默认值设置后，否则会内容错乱。
+    window.mdui?.mutation();
     // 推到微任务：先让 DOM 和 MDUI 初始化完成，再触发默认线路的自动加载。
     queueMicrotask(() => onSelect(items[Number(select.value)], description));
   }

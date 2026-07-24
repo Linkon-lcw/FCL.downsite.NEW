@@ -26,7 +26,7 @@ const ADAPTERS = new Map([
 /**
  * @param {unknown} payload 上游 API 已解析的 JSON
  * @param {string|undefined} apiVersion data/mirror.json 中的 apiVer
- * @param {{source?: string, baseUrl?: string, latestVersion?: string|null}} context adapter 共享上下文
+ * @param {{source?: string, baseUrl?: string, latestVersion?: string|null, notJoinRandom?: boolean}} context adapter 共享上下文
  */
 export function adaptDownloadData(payload, apiVersion, context = {}) {
   // 为所有 adapter 补齐同一份上下文，未登记协议自动退回兼容性的 plain adapter。
@@ -34,6 +34,7 @@ export function adaptDownloadData(payload, apiVersion, context = {}) {
     source: context.source || apiVersion || '未知线路',
     baseUrl: context.baseUrl || window.location.origin,
     latestVersion: context.latestVersion || payload?.latest || null,
+    notJoinRandom: context.notJoinRandom || false,
   };
   return (ADAPTERS.get(apiVersion) || adaptPlain)(payload, normalizedContext);
 }

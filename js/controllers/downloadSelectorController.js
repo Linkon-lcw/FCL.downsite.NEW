@@ -77,6 +77,7 @@ export function createDownloadSelectorController(options) {
         softwareName,
         sourceName: item.sourceName || item.name,
         random: item.random,
+        notJoinRandom: item.notJoinRandom,
         signal,
       });
     } else if (item.children || item.items) {

@@ -36,6 +36,11 @@
       "key": "/api/releases?owner=MobileGL-Dev&repo=MobileGlues-release&versions=20"
     },
     {
+      "mirrorId": 8,
+      "key": "/MG",
+      "notJoinRandom": true
+    },
+    {
       "mirrorId": 9,
       "key": "/api/v2/launchers/MG"
     }

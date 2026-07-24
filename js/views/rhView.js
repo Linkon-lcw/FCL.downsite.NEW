@@ -168,7 +168,9 @@ function createSummaryPanel(assets) {
   return panelItem;
 }
 
-/** 向表格 tbody 添加一行。label 为文本，value 为纯文本或链接文本，href 可选。 */
+/** 向表格 tbody 添加一行。label 为文本，value 为纯文本或链接文本，href 可选。
+ *  value 中的换行符 `\n` 会被拆分为多个 <p>，避免 HTML 默认不识别换行导致 URL 全部挤在一行。
+ */
 function addTableRow(tbody, label, value, href) {
   const row = document.createElement('tr');
   const labelCell = document.createElement('td');
@@ -177,9 +179,13 @@ function addTableRow(tbody, label, value, href) {
   if (href) {
     valueCell.appendChild(createExternalLink(href, value));
   } else {
-    const pre = document.createElement('p');
-    pre.textContent = value;
-    valueCell.appendChild(pre);
+    // 按 \n 拆分：每段单独一个 <p>，让多个 URL 各占一行，符合 mdui-typo 排版。
+    const lines = String(value).split('\n');
+    lines.forEach((line) => {
+      const p = document.createElement('p');
+      p.textContent = line;
+      valueCell.appendChild(p);
+    });
   }
   row.append(labelCell, valueCell);
   tbody.appendChild(row);

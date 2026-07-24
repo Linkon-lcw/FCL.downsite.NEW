@@ -48,7 +48,6 @@ function translateError(error) {
   if (error.status === 500) return 'GitHub 服务暂时不可用';
 
   if (msg.includes('超时') || msg.includes('timeout')) return '请求超时，请检查网络连接';
-  if (msg.includes('未找到') && msg.includes('软件')) return msg;
 
   return msg || '加载版本历史时发生未知错误';
 }

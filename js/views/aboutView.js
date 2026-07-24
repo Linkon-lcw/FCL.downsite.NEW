@@ -1,5 +1,4 @@
 import { renderStatus } from './commonView.js';
-import { createSafeContent } from '../security/content.js';
 import { createPanelItem, createExternalLink } from './uiComponents.js';
 
 /**
@@ -23,7 +22,7 @@ export function renderAboutError(container, error, onRetry) {
  * @param {Array} mirrors 线路数据，来自 mirror.json
  * @param {Array} contributors 贡献者数据，来自 contribute.json
  */
-export async function renderDownloadLines(container, mirrors, contributors) {
+export function renderDownloadLines(container, mirrors, contributors) {
   const contributorMap = new Map();
   contributors.forEach((c) => contributorMap.set(c.id, c));
 
@@ -52,7 +51,8 @@ export async function renderDownloadLines(container, mirrors, contributors) {
     tr.append(tdName, tdProvider);
     fragment.appendChild(tr);
   });
-  container.replaceChildren(await createSafeContent(fragment));
+  // 全部节点均由 DOM API 安全构建（textContent / 受控属性），无需再过 DOMPurify。
+  container.replaceChildren(fragment);
 }
 
 /**
@@ -161,7 +161,8 @@ export async function renderContributors(container, contributors, mirrors) {
     fragment.appendChild(panelItem);
   });
 
-  container.replaceChildren(await createSafeContent(fragment));
+  // 全部节点均由 DOM API 安全构建（textContent / 受控 createExternalLink），无需再过 DOMPurify。
+  container.replaceChildren(fragment);
   window.mdui?.mutation();
 }
 
@@ -202,5 +203,6 @@ export async function renderUsedProjects(container, projects) {
     fragment.appendChild(tr);
   });
 
-  container.replaceChildren(await createSafeContent(fragment));
+  // 全部节点均由 DOM API 安全构建（textContent / 受控 createExternalLink），无需再过 DOMPurify。
+  container.replaceChildren(fragment);
 }

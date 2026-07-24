@@ -25,9 +25,10 @@ export function createAboutController(elements) {
         getJSON('/data/usedProj.json', { cache: true }),
       ]);
 
-      renderDownloadLines(elements.downloadLines, mirrors, contributors);
-      renderContributors(elements.contributors, contributors, mirrors);
-      renderUsedProjects(elements.usedProjects, usedProjects);
+      // 三个渲染函数内部需要加载 DOMPurify 等依赖，必须 await 才能被外层 try/catch 统一捕获。
+      await renderDownloadLines(elements.downloadLines, mirrors, contributors);
+      await renderContributors(elements.contributors, contributors, mirrors);
+      await renderUsedProjects(elements.usedProjects, usedProjects);
     } catch (error) {
       console.error('关于页面加载失败', error);
       renderAboutError(elements.downloadLines, error, load);

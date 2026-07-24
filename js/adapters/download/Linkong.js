@@ -35,5 +35,9 @@ export function adaptLinkong(payload, context) {
  * @returns {string} 最终下载URL
  */
 export function wdfDownUrl(baseUrl, tag, assetName, owner, repo) {
-  return `${baseUrl}/api/releases/${tag}/${assetName}?owner=${owner}&repo=${repo}`;
+  // 对路径段与查询参数编码，避免 assetName 等字段含特殊字符时破坏 URL。
+  const encodedTag = encodeURIComponent(tag);
+  const encodedAssetName = encodeURIComponent(assetName);
+  const params = new URLSearchParams({ owner, repo });
+  return `${baseUrl}/api/releases/${encodedTag}/${encodedAssetName}?${params.toString()}`;
 }

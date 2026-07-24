@@ -1,4 +1,5 @@
 import { getText } from '../http/client.js';
+import { readPreference, writePreference } from '../domain/preferences.js';
 import { renderStatus } from '../views/commonView.js';
 
 /**
@@ -58,9 +59,10 @@ function renderAnnouncement(container, html, hash, isNew) {
   body.append(...Array.from(temp.childNodes));
 
   // 用户展开面板即视为已读，写入校验值并移除 NEW 标记。
+  // 经 writePreference 写入，隐私模式或存储被禁用时降级为只记录警告，不让整个公告模块崩溃。
   header.addEventListener('click', () => {
     if (isNew) {
-      localStorage.setItem(STORAGE_KEY, hash);
+      writePreference(STORAGE_KEY, hash);
       const badge = document.getElementById('new-announcement-badge');
       if (badge) badge.remove();
     }
@@ -82,7 +84,8 @@ export async function loadAnnouncement(container) {
   try {
     const html = await getText('/data/announcement.html', { cache: true });
     const hash = simpleHash64(html);
-    const storedHash = localStorage.getItem(STORAGE_KEY);
+    // 经 readPreference 读取，隐私模式下返回 null 视为未读，会显示 NEW 标记但不影响渲染。
+    const storedHash = readPreference(STORAGE_KEY);
     const isNew = hash !== storedHash;
     renderAnnouncement(container, html, hash, isNew);
   } catch (error) {

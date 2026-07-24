@@ -25,6 +25,12 @@ export function renderListError(elements, error, onRetry) {
  */
 export function renderFilterTags(container, tags, onChange) {
   // 事件委托只绑定在容器一次，后续按钮的视觉状态由 activeTagIds 单一来源驱动。
+  // 重试场景下会再次调用本函数：先 abort 上一次的 AbortController，
+  // 让旧监听器停止响应，避免一次点击触发多次 onChange（旧闭包仍指向已废弃的 Set）。
+  if (container._tagFilterAbort) container._tagFilterAbort.abort();
+  const ac = new AbortController();
+  container._tagFilterAbort = ac;
+
   const activeTagIds = new Set();
   const fragment = document.createDocumentFragment();
   const allButton = createTagButton('显示所有', '', true);
@@ -48,7 +54,7 @@ export function renderFilterTags(container, tags, onChange) {
     });
     // 传副本而非内部 Set，防止 controller 意外修改 view 持有的状态。
     onChange(new Set(activeTagIds));
-  });
+  }, { signal: ac.signal });
 }
 
 /** 创建单个可访问的 button，不使用无 href 的 a 标签模拟按钮。 */

@@ -79,15 +79,3 @@ export function loadDescription(url, signal) {
   // 描述默认按纯文本消费；是否允许 HTML 由 controller 中的 descriptionFormat 明确决定。
   return getText(url, { signal, timeoutMs: 15000 });
 }
-
-/**
- * 获取一个线路的 baseUrl。
- * @param {number} mirrorId 线路ID
- * @returns {string} 基础URL
- */
-export async function getBaseUrl(mirrorId) {
-  if (!mirrorId) return '';
-  const mirrorData = await getJSON('data/mirror.json');
-  const baseUrl = mirrorData.find(mirror => mirror.id === mirrorId);
-  return baseUrl?.baseUrl || '';
-}

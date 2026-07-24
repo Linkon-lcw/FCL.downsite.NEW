@@ -144,7 +144,7 @@ export function createSelectorView(container, stopButton, matchedArchitecture) {
 
     if (matchedArchitecture && rows.some((row) => row.architecture === matchedArchitecture)) {
       const note = document.createElement('p');
-      note.className = 'description';
+      note.className = 'description mdui-typo';
       note.textContent = '已匹配当前架构，请留意绿色行（仅供参考，安装失败时请选择 all 架构）。';
       section.appendChild(note);
     }
@@ -152,6 +152,8 @@ export function createSelectorView(container, stopButton, matchedArchitecture) {
     const hiddenCount = rows.filter((row) => row.hidden).length;
     if (hiddenCount) {
       // 用户主动要求后才展示被规则隐藏的项目，保留"推荐架构优先"的默认体验。
+      const showdiv = document.createElement('div');
+      showdiv.className = 'description';
       const show = createRaisedButton(`显示 ${hiddenCount} 个被筛选条件隐藏的项目`, {
         block: true,
         onClick: () => {
@@ -159,7 +161,8 @@ export function createSelectorView(container, stopButton, matchedArchitecture) {
           show.remove();
         },
       });
-      section.appendChild(show);
+      showdiv.appendChild(show);
+      section.appendChild(showdiv);
     }
     section.appendChild(wrapper);
     window.mdui?.mutation();

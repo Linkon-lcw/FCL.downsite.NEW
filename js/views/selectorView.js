@@ -101,7 +101,7 @@ export function createSelectorView(container, stopButton, matchedArchitecture) {
     // 只保留至少有一行内容的元数据列，移动端不浪费横向空间。
     const visibleColumns = COLUMN_DEFINITIONS.filter(([, key]) => key === 'action' || rows.some((row) => row.values[key]));
     const { wrapper, table, thead, tbody } = createFluidTable();
-    table.classList.add('download-buttons-container');
+    table.classList.add('xf-download-buttons-container');
     const header = document.createElement('tr');
     visibleColumns.forEach(([label]) => {
       const cell = document.createElement('th');

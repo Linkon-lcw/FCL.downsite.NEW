@@ -101,6 +101,10 @@
   body:not(.mdui-theme-layout-light) .mdui-table td {
     border-right: 1px solid rgba(255, 255, 255, .12);
   }
+  body:not(.mdui-theme-layout-light) .mdui-table th:last-child,
+  body:not(.mdui-theme-layout-light) .mdui-table td:last-child {
+    border-right: unset;
+  }
 }
 
 .mdui-table td:first-child,

@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="stylesheet" href="https://unpkg.com/mdui@1.0.2/dist/css/mdui.min.css" integrity="sha384-wuqJ3gKnD2BDa/kF14f6SECESfcvVTsNruuVi3BOAk2mNDIOn/uvHdd+eMK7FY0b" crossorigin="anonymous">
   <link rel="stylesheet" href="/css/mdui.edit.css">
@@ -35,7 +35,7 @@
           <div>
             <div class="mdui-row">
               <div class="mdui-col-xs-12 mdui-col-sm-4">
-                <!-- 禁用是因为此时还未初始化下载控制器，直接点击会报错未提供软件ID -->
+                <!-- 禁用是因为此时还未初始化下载控制器，直接点击会报错未提供软件ID。MDUI 已处理 <a disabled> 的样式与交互。 -->
                 <a id="btn-download" class="mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple" href="/html/down.html" disabled><i class="mdui-icon material-icons">file_download</i> 下载资源</a>
               </div>
               <div class="mdui-col-xs-12 mdui-col-sm-4">

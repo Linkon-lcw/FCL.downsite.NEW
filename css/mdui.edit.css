@@ -62,6 +62,10 @@
   right: 12px;
 }
 
+.mdui-panel-item-open>.mdui-panel-item-body{
+  overflow: unset;
+}
+
 .mdui-panel-item-body {
   padding: 0 12px;
 }
@@ -100,6 +104,10 @@
   body:not(.mdui-theme-layout-light) .mdui-table th,
   body:not(.mdui-theme-layout-light) .mdui-table td {
     border-right: 1px solid rgba(255, 255, 255, .12);
+  }
+  body:not(.mdui-theme-layout-light) .mdui-table th:last-child,
+  body:not(.mdui-theme-layout-light) .mdui-table td:last-child {
+    border-right: unset;
   }
 }
 

@@ -1,0 +1,39 @@
+[
+  {
+    "name": "behavior",
+    "label": "行为设置",
+    "children": [
+      {
+        "name": "list",
+        "label": "资源列表",
+        "children": [
+          {
+            "id": 0,
+            "name": "资源列表页默认打开方式",
+            "type": "select",
+            "options": [
+              {
+                "value": "detail",
+                "label": "详情页",
+                "default": true
+              },
+              {
+                "value": "download",
+                "label": "下载页"
+              },
+              {
+                "value": "doc",
+                "label": "文档页"
+              },
+              {
+                "value": "history",
+                "label": "版本历史页"
+              }
+            ],
+            "storageKey": "fdn-default-open-method"
+          }
+        ]
+      }
+    ]
+  }
+]

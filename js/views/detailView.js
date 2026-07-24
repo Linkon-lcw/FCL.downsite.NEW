@@ -1,6 +1,7 @@
 import { getFeedbackChannels } from '../repositories/siteRepository.js';
 import { renderStatus, setErrorTitle, setSoftwareHeader } from './commonView.js';
 import { isSafeNavigationUrl } from '../security/content.js';
+import { createExternalLink, createGrid } from './uiComponents.js';
 
 let errorToken = 0;
 
@@ -70,7 +71,18 @@ export function renderDetail(elements, id, basic, detail, tags) {
   errorToken++;
   // 重置操作按钮区域，移除所有子元素（包括错误时添加的反馈按钮），重新添加三个操作按钮
   const container = elements.operations;
-  container.replaceChildren(elements.download, elements.intro, elements.history);
+  const containerGrid = createGrid();
+  const gridDown = document.createElement('div');
+  gridDown.className = 'mdui-col-xs-12 mdui-col-sm-4';
+  gridDown.appendChild(elements.download);
+  const gridIntro = document.createElement('div');
+  gridIntro.className = 'mdui-col-xs-12 mdui-col-sm-4';
+  gridIntro.appendChild(elements.intro);
+  const gridHistory = document.createElement('div');
+  gridHistory.className = 'mdui-col-xs-12 mdui-col-sm-4';
+  gridHistory.appendChild(elements.history);
+  containerGrid.append(gridDown, gridIntro, gridHistory);
+  container.replaceChildren(containerGrid);
 
   setSoftwareHeader(basic);
   elements.operations.hidden = false;
@@ -121,10 +133,5 @@ function createIcon(basic) {
 function createInfoValue(item) {
   // 外部信息链接经过协议校验，并明确隔离新窗口的 opener。
   if (!item.href || !isSafeNavigationUrl(item.href)) return item.text || item.href || '';
-  const link = document.createElement('a');
-  link.href = item.href;
-  link.textContent = item.text || item.href;
-  link.target = '_blank';
-  link.rel = 'noopener noreferrer';
-  return link;
+  return createExternalLink(item.href, item.text || item.href);
 }

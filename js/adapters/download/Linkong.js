@@ -24,3 +24,21 @@ export function adaptLinkong(payload, context) {
     ),
   }));
 }
+
+/**
+ * 拼凑最终下载URL，API中提供的是GH原始下载URL。
+ * GET /api/releases/:tag/:assetName?owner=<owner>&repo=<repo>
+ * @param {string} baseUrl 基础URL
+ * @param {string} tag 版本标签
+ * @param {string} assetName 名称
+ * @param {string} owner GH仓库所有者
+ * @param {string} repo GH仓库名称
+ * @returns {string} 最终下载URL
+ */
+export function wdfDownUrl(baseUrl, tag, assetName, owner, repo) {
+  // 对路径段与查询参数编码，避免 assetName 等字段含特殊字符时破坏 URL。
+  const encodedTag = encodeURIComponent(tag);
+  const encodedAssetName = encodeURIComponent(assetName);
+  const params = new URLSearchParams({ owner, repo });
+  return `${baseUrl}/api/releases/${encodedTag}/${encodedAssetName}?${params.toString()}`;
+}

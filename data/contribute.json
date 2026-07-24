@@ -50,5 +50,20 @@
   {
     "id": 4,
     "accentName": "LANt"
+  },
+  {
+    "id": 5,
+    "accentName": "lisongyun",
+    "avatar": "https://assets.lisongyun.top/avatar/avatar.png",
+    "link": [
+      {
+        "name": "QQ",
+        "href": "https://qm.qq.com/q/xPJQ7mMvrW"
+      },
+      {
+        "name": "Bilibili",
+        "href": "https://space.bilibili.com/3493107991579439"
+      }
+    ]
   }
 ]

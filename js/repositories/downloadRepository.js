@@ -37,7 +37,7 @@ async function getLatestVersion(apiVersion, softwareName, payload, signal) {
 
 /**
  * 获取并适配一个选择器节点的下级数据。
- * @param {{url?: string, apiVersion?: string, softwareName?: string, sourceName?: string, random?: boolean, signal?: AbortSignal}} options
+ * @param {{url?: string, apiVersion?: string, softwareName?: string, sourceName?: string, random?: boolean, notJoinRandom?: boolean, signal?: AbortSignal}} options
  * @returns {Promise<Array<object>>} 可继续选择的分组节点，或可直接渲染的统一下载叶子节点
  */
 export async function loadDownloadNodes({
@@ -46,6 +46,7 @@ export async function loadDownloadNodes({
   softwareName,
   sourceName,
   random = false,
+  notJoinRandom = false,
   signal,
 }) {
   // cxsjmc 的旧协议没有可请求的目录 URL，而是由 GitHub 最新 Release 拼出直链。
@@ -68,6 +69,7 @@ export async function loadDownloadNodes({
     source: sourceName,
     baseUrl: new URL(url, window.location.href).origin,
     latestVersion,
+    notJoinRandom,
   });
   return random ? randomlySelectDefault(nodes) : nodes;
 }
@@ -76,16 +78,4 @@ export async function loadDownloadNodes({
 export function loadDescription(url, signal) {
   // 描述默认按纯文本消费；是否允许 HTML 由 controller 中的 descriptionFormat 明确决定。
   return getText(url, { signal, timeoutMs: 15000 });
-}
-
-/**
- * 获取一个线路的 baseUrl。
- * @param {number} mirrorId 线路ID
- * @returns {string} 基础URL
- */
-export async function getBaseUrl(mirrorId) {
-  if (!mirrorId) return '';
-  const mirrorData = await getJSON('data/mirror.json');
-  const baseUrl = mirrorData.find(mirror => mirror.id === mirrorId);
-  return baseUrl?.baseUrl || '';
 }

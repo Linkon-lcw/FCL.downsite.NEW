@@ -24,12 +24,22 @@
   "releaseHistoryUrl": "https://api.github.com/repos/ZalithLauncher/ZalithLauncher2/releases",
   "download": [
     {
+      "mirrorId": 0,
+      "key": "/3/index.json",
+      "notJoinRandom": true
+    },
+    {
       "mirrorId": 1,
       "key": "/api/public/v1/projects/ZalithLauncher2/assets"
     },
     {
       "mirrorId": 4,
       "key": "/api/releases?owner=ZalithLauncher&repo=ZalithLauncher2&versions=20"
+    },
+    {
+      "mirrorId": 8,
+      "key": "/zl2",
+      "notJoinRandom": true
     },
     {
       "mirrorId": 9,

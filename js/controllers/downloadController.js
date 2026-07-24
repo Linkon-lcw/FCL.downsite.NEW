@@ -45,6 +45,7 @@ export function createDownloadController(elements, softwareId) {
           nextUrl: joinUrl(mirror.baseUrl, download.key),
           // apiVer 为空时走 plain adapter，允许旧镜像逐步迁移。
           apiVersion: mirror.apiVer,
+          notJoinRandom: download.notJoinRandom, // 这个傻逼地方害我找了一个小时，专门写这个注释吐槽一下。
         };
       });
       if (!mirrorItems.length) throw new Error('该软件暂无下载线路');
@@ -56,7 +57,7 @@ export function createDownloadController(elements, softwareId) {
         stopButton: elements.stopButton,
         matchedArchitecture: system.matchedArchitecture,
         softwareName: basic.name,
-        dataSource: [{ name: basic.name, nameIsSoftware: true, children: mirrorItems, random: detail.randomSelectMirror, filter: detail.filter, description: detail.description }],
+        dataSource: [{ name: basic.name, nameIsSoftware: true, children: mirrorItems, random: detail.randomSelectMirror, notJoinRandom: detail.notJoinRandom, filter: detail.filter, description: detail.description }],
       });
       selectorController.start();
     } catch (error) {

@@ -94,3 +94,7 @@
   color: #ff0;
   margin-left: 8px;
 }
+
+.xf-download-buttons-container {
+  text-wrap: nowrap;
+}

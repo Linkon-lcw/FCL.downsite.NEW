@@ -3,43 +3,39 @@
     "id": 0,
     "name": "线路1",
     "baseUrl": "/data/down",
-    "contributeId": [
-      0
-    ]
+    "contributeId": [0]
   },
   {
     "id": 1,
     "name": "线路2",
     "baseUrl": "https://fyhub.cn",
     "apiVer": "fengyuan",
-    "contributeId": [
-      1
-    ]
+    "contributeId": [1]
   },
   {
     "id": 4,
     "name": "线路5",
     "baseUrl": "https://fcl.072211.xyz",
     "apiVer": "Linkong",
-    "contributeId": [
-      3
-    ]
+    "contributeId": [3]
+  },
+  {
+    "id": 8,
+    "name": "线路9",
+    "baseUrl": "https://api.lisongyun.top",
+    "contributeId": [5]
   },
   {
     "id": 9,
     "name": "线路10",
     "baseUrl": "https://miawa.cn",
     "apiVer": "Lemwood",
-    "contributeId": [
-      2
-    ]
+    "contributeId": [2]
   },
   {
     "id": 10,
     "name": "线路11",
     "baseUrl": "https://mirror.cxsjmc.cn",
-    "contributeId": [
-      4
-    ]
+    "contributeId": [4]
   }
 ]

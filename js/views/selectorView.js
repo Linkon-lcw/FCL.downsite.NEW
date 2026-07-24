@@ -1,6 +1,7 @@
 import { inferArchitecture } from '../domain/systemInfo.js';
 import { isSafeNavigationUrl } from '../security/content.js';
 import { formatBytes, renderStatus } from './commonView.js';
+import { createExternalLink, createFluidTable, createRaisedButton } from './uiComponents.js';
 
 // 最终表格会删除所有行均为空的列，列名与下载项统一模型一一对应。
 const COLUMN_DEFINITIONS = [
@@ -99,19 +100,15 @@ export function createSelectorView(container, stopButton, matchedArchitecture) {
     });
     // 只保留至少有一行内容的元数据列，移动端不浪费横向空间。
     const visibleColumns = COLUMN_DEFINITIONS.filter(([, key]) => key === 'action' || rows.some((row) => row.values[key]));
-    const wrapper = document.createElement('div');
-    wrapper.className = 'mdui-table-fluid';
-    const table = document.createElement('table');
-    table.className = 'mdui-table download-buttons-container';
+    const { wrapper, table, thead, tbody } = createFluidTable();
+    table.classList.add('download-buttons-container');
     const header = document.createElement('tr');
     visibleColumns.forEach(([label]) => {
       const cell = document.createElement('th');
       cell.textContent = label;
       header.appendChild(cell);
     });
-    const thead = document.createElement('thead');
     thead.appendChild(header);
-    const tbody = document.createElement('tbody');
 
     rows.forEach((row) => {
       const tr = document.createElement('tr');
@@ -120,12 +117,9 @@ export function createSelectorView(container, stopButton, matchedArchitecture) {
       visibleColumns.forEach(([, key]) => {
         const cell = document.createElement('td');
         if (key === 'action') {
-          const link = document.createElement('a');
-          link.className = 'mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple';
-          link.href = row.item.downloadUrl;
-          link.target = '_blank';
-          link.rel = 'noopener noreferrer';
-          link.textContent = row.item.available === false ? '暂不可用' : '下载';
+          const link = createExternalLink(row.item.downloadUrl, row.item.available === false ? '暂不可用' : '下载', {
+            className: 'mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple',
+          });
           // 不可用线路仍展示原因和 URL，但阻止实际跳转，便于用户知情而非直接消失。
           if (row.item.available === false) {
             link.classList.add('disabled');
@@ -136,13 +130,8 @@ export function createSelectorView(container, stopButton, matchedArchitecture) {
           }
           cell.appendChild(link);
         } else if (key === 'url') {
-          const link = document.createElement('a');
-          link.href = row.item.downloadUrl;
-          link.target = '_blank';
-          link.rel = 'noopener noreferrer';
-          link.textContent = row.item.downloadUrl;
           cell.className = 'mdui-typo';
-          cell.appendChild(link);
+          cell.appendChild(createExternalLink(row.item.downloadUrl, row.item.downloadUrl));
         } else {
           cell.textContent = row.values[key];
         }
@@ -162,15 +151,14 @@ export function createSelectorView(container, stopButton, matchedArchitecture) {
 
     const hiddenCount = rows.filter((row) => row.hidden).length;
     if (hiddenCount) {
-      const show = document.createElement('button');
-      show.type = 'button';
-      show.className = 'mdui-btn mdui-btn-raised mdui-ripple mdui-block';
-      show.textContent = `显示 ${hiddenCount} 个被筛选条件隐藏的项目`;
-      // 用户主动要求后才展示被规则隐藏的项目，保留“推荐架构优先”的默认体验。
-      show.addEventListener('click', () => {
-        tbody.querySelectorAll('.xf-filter-hidden').forEach((row) => row.classList.remove('xf-filter-hidden'));
-        show.remove();
-      }, { once: true });
+      // 用户主动要求后才展示被规则隐藏的项目，保留"推荐架构优先"的默认体验。
+      const show = createRaisedButton(`显示 ${hiddenCount} 个被筛选条件隐藏的项目`, {
+        block: true,
+        onClick: () => {
+          tbody.querySelectorAll('.xf-filter-hidden').forEach((row) => row.classList.remove('xf-filter-hidden'));
+          show.remove();
+        },
+      });
       section.appendChild(show);
     }
     section.appendChild(wrapper);

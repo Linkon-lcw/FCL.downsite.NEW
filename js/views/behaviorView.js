@@ -1,4 +1,5 @@
 import { renderStatus } from './commonView.js';
+import { createPanel, createPanelItem } from './uiComponents.js';
 
 /**
  * 行为设置页面 view。
@@ -23,31 +24,6 @@ export function getDefaultOptionValue(options) {
  */
 export function isValidOption(options, value) {
   return options.some((opt) => opt.value === value);
-}
-
-// TODO: 提取重复函数
-
-/**
- * 创建 MDUI 面板项。
- * @param {string} title - 面板标题
- * @param {boolean} isOpen - 是否默认展开
- * @returns {HTMLElement}
- */
-function createPanelItem(title, isOpen = true) {
-  const item = document.createElement('div');
-  item.className = isOpen ? 'mdui-panel-item mdui-panel-item-open' : 'mdui-panel-item';
-  const header = document.createElement('div');
-  header.className = 'mdui-panel-item-header mdui-ripple';
-  const label = document.createElement('div');
-  label.textContent = title;
-  const arrow = document.createElement('i');
-  arrow.className = 'mdui-panel-item-arrow mdui-icon material-icons';
-  arrow.textContent = 'keyboard_arrow_down';
-  const body = document.createElement('div');
-  body.className = 'mdui-panel-item-body';
-  header.append(label, arrow);
-  item.append(header, body);
-  return item;
 }
 
 /**
@@ -110,21 +86,15 @@ export function renderSettingsTree(container, categories, readPref, onChange) {
     return;
   }
 
-  const outerPanel = document.createElement('div');
-  outerPanel.className = 'mdui-panel';
-  outerPanel.setAttribute('mdui-panel', '');
+  const outerPanel = createPanel();
 
   categories.forEach((category) => {
-    const categoryItem = createPanelItem(category.label || category.name);
-    const categoryBody = categoryItem.querySelector('.mdui-panel-item-body');
+    const { element: categoryItem, body: categoryBody } = createPanelItem(category.label || category.name, { isOpen: true });
 
-    const innerPanel = document.createElement('div');
-    innerPanel.className = 'mdui-panel';
-    innerPanel.setAttribute('mdui-panel', '');
+    const innerPanel = createPanel();
 
     (category.children || []).forEach((group) => {
-      const groupItem = createPanelItem(group.label || group.name);
-      const groupBody = groupItem.querySelector('.mdui-panel-item-body');
+      const { element: groupItem, body: groupBody } = createPanelItem(group.label || group.name, { isOpen: true });
 
       (group.children || []).forEach((setting) => {
         const saved = readPref(setting.storageKey);

@@ -1,5 +1,6 @@
 import { renderStatus } from './commonView.js';
 import { createSafeContent } from '../security/content.js';
+import { createPanelItem, createExternalLink } from './uiComponents.js';
 
 /**
  * 关于页面 view。
@@ -72,26 +73,11 @@ export async function renderContributors(container, contributors, mirrors) {
   });
 
   contributors.forEach((c) => {
-    const panelItem = document.createElement('div');
-    panelItem.className = 'mdui-panel-item mdui-panel-item-open';
-
-    // Header
-    const header = document.createElement('div');
-    header.className = 'mdui-panel-item-header mdui-ripple';
+    const { element: panelItem, header, body } = createPanelItem(c.accentName || c.name, {
+      isOpen: true,
+      bodyClass: 'mdui-container-fluid',
+    });
     header.id = c.accentName || c.name || `contributorID-${c.id}`;
-
-    const headerTitle = document.createElement('div');
-    headerTitle.textContent = c.accentName || c.name;
-
-    const arrow = document.createElement('i');
-    arrow.className = 'mdui-panel-item-arrow mdui-icon material-icons';
-    arrow.textContent = 'keyboard_arrow_down';
-
-    header.append(headerTitle, arrow);
-
-    // Body
-    const body = document.createElement('div');
-    body.className = 'mdui-panel-item-body mdui-container-fluid';
 
     const row = document.createElement('div');
     row.className = 'mdui-row';
@@ -133,13 +119,9 @@ export async function renderContributors(container, contributors, mirrors) {
     const linkContainer = document.createElement('div');
     if (c.link && c.link.length > 0) {
       c.link.forEach((link) => {
-        const a = document.createElement('a');
-        a.href = link.href;
-        a.target = '_blank';
-        a.rel = 'noopener noreferrer';
-        a.className = 'mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple';
-        a.textContent = link.name;
-        linkContainer.appendChild(a);
+        linkContainer.appendChild(createExternalLink(link.href, link.name, {
+          className: 'mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple',
+        }));
       });
     }
 
@@ -207,21 +189,11 @@ export async function renderUsedProjects(container, projects) {
     tdVersion.textContent = p.useVersion;
 
     const tdLink = document.createElement('td');
-    const linkA = document.createElement('a');
-    linkA.href = p.link;
-    linkA.target = '_blank';
-    linkA.rel = 'noopener noreferrer';
-    linkA.textContent = p.link;
-    tdLink.appendChild(linkA);
+    tdLink.appendChild(createExternalLink(p.link, p.link));
 
     const tdLicense = document.createElement('td');
     if (p.licenseLink) {
-      const licenseA = document.createElement('a');
-      licenseA.href = p.licenseLink;
-      licenseA.target = '_blank';
-      licenseA.rel = 'noopener noreferrer';
-      licenseA.textContent = p.license;
-      tdLicense.appendChild(licenseA);
+      tdLicense.appendChild(createExternalLink(p.licenseLink, p.license));
     } else {
       tdLicense.textContent = p.license;
     }

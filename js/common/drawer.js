@@ -2,6 +2,7 @@ import { getFeedbackChannels } from '../repositories/siteRepository.js';
 import { renderStatus } from '../views/commonView.js';
 import { isSafeNavigationUrl } from '../security/content.js';
 import { loadAnnouncement } from './announcement.js';
+import { createPanel, createPanelItem, createTypoContainer } from '../views/uiComponents.js';
 
 /**
  * 所有页面共用的右侧抽屉。
@@ -28,8 +29,7 @@ function createNavigationLink(label, href, iconName, target) {
  * @returns {HTMLElement} 文本段落片段
  */
 function createTextArticle(text) {
-  const div = document.createElement('div');
-  div.className = 'mdui-typo';
+  const div = createTypoContainer();
   text.forEach((line) => div.appendChild(createParagraph(line)));
   return div;
 }
@@ -41,22 +41,10 @@ function createParagraph(text) {
 }
 
 /** 创建一个 MDUI 面板项，content 为已创建好的 DOM 子节点数组。 */
-function createPanel(title, content, isOpen = true) {
-  const panelItem = document.createElement('div');
-  panelItem.className = isOpen ? 'mdui-panel-item mdui-panel-item-open' : 'mdui-panel-item';
-  const header = document.createElement('div');
-  header.className = 'mdui-panel-item-header mdui-ripple';
-  const label = document.createElement('div');
-  label.textContent = title;
-  const arrow = document.createElement('i');
-  arrow.className = 'mdui-panel-item-arrow mdui-icon material-icons';
-  arrow.textContent = 'keyboard_arrow_down';
-  const body = document.createElement('div');
-  body.className = 'mdui-panel-item-body';
+function createDrawerPanel(title, content, isOpen = true) {
+  const { element, body } = createPanelItem(title, { isOpen });
   body.append(...content);
-  header.append(label, arrow);
-  panelItem.append(header, body);
-  return panelItem;
+  return element;
 }
 
 /**
@@ -91,25 +79,23 @@ function createDrawer() {
   const drawer = document.createElement('aside');
   drawer.className = 'mdui-drawer mdui-drawer-right mdui-container-fluid';
   drawer.setAttribute('aria-label', '网站导航');
-  const panel = document.createElement('div');
-  panel.className = 'mdui-panel';
-  panel.setAttribute('mdui-panel', '');
+  const panel = createPanel();
 
   const announcementContainer = document.createElement('div');
   announcementContainer.className = 'mdui-panel-item';
   panel.appendChild(announcementContainer);
   loadAnnouncement(announcementContainer);
 
-  panel.appendChild(createPanel('网站导航', [
+  panel.appendChild(createDrawerPanel('网站导航', [
     createNavigationLink('资源列表', '/html/list.html', 'list'),
     createNavigationLink('赞助站长', '/html/sponsor.html', 'card_giftcard'),
     createNavigationLink('关于网站', '/html/about.html', 'people'),
   ]));
-  panel.appendChild(createPanel('网站设置', [
+  panel.appendChild(createDrawerPanel('网站设置', [
     createNavigationLink('行为设置', '/html/behavior.html', 'settings'),
     createNavigationLink('主题设置', '/html/theme.html', 'style'),
   ]));
-  panel.appendChild(createPanel('回到旧版', [
+  panel.appendChild(createDrawerPanel('回到旧版', [
     createTextArticle(['旧版网站将不会有任何更新，不建议使用，仅作纪念。']),
     createNavigationLink('NEXT版', 'https://next.foldcraftlauncher.cn', 'history', '_blank'),
     createNavigationLink('mdui版', 'https://mdui.foldcraftlauncher.cn', 'history', '_blank'),
@@ -117,8 +103,8 @@ function createDrawer() {
   ], false));
 
   const feedbackContainer = document.createElement('div');
-  panel.appendChild(createPanel('建议反馈', [feedbackContainer]));
-  panel.appendChild(createPanel('网站信息', [
+  panel.appendChild(createDrawerPanel('建议反馈', [feedbackContainer]));
+  panel.appendChild(createDrawerPanel('网站信息', [
     createNavigationLink('2026 XIAOLUOFOXINGTON', '#', 'copyright'),
     createNavigationLink('新ICP备2024015133号-7', 'https://beian.miit.gov.cn', 'beenhere', '_blank'),
   ]));

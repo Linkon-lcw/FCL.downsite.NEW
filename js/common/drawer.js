@@ -153,8 +153,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const wasCreated = !drawerInstance;
     const instance = ensureDrawer();
     if (wasCreated) {
-      // 首次创建时延迟一帧，确保浏览器已应用初始样式，否则动画不会触发
-      requestAnimationFrame(() => instance.toggle());
+      // 首次创建时使用双重 requestAnimationFrame 确保浏览器完成布局后再切换，使动画生效
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => instance.toggle());
+      });
     } else {
       instance.toggle();
     }
